@@ -19,6 +19,12 @@ const GoogleG = () => (
   </svg>
 );
 
+const CometIcon = ({ className, style }) => (
+  <svg className={className} style={style} viewBox="0 0 512 512" fill="currentColor">
+    <path d="M474.2 37.8c-14.8-14.8-37.4-17-54.8-5.3L275.5 129.4c-8.9-5-19.5-6-29.2-2.5l-65.7 23.9c-10.9 4-16.5 16-12.5 26.9l23.9 65.7c3.5 9.7 2.5 20.3-2.5 29.2L96.5 416.5c-11.7 17.4-9.5 40 5.3 54.8s37.4 17 54.8 5.3l144.1-96.9c8.9 5 19.5 6 29.2 2.5l65.7-23.9c10.9-4 16.5-16 12.5-26.9l-23.9-65.7c-3.5-9.7-2.5-20.3 2.5-29.2l96.9-144.1c11.7-17.4 9.5-40-5.3-54.8zm-268 288.5l-19.6 19.6c-4.7 4.7-12.3 4.7-17 0l-14.1-14.1c-4.7-4.7-4.7-12.3 0-17l19.6-19.6c4.7-4.7 12.3-4.7 17 0l14.1 14.1c4.7 4.7 4.7 12.3 0 17zm33.9-33.9l-19.6 19.6c-4.7 4.7-12.3 4.7-17 0l-14.1-14.1c-4.7-4.7-4.7-12.3 0-17l19.6-19.6c4.7-4.7 12.3-4.7 17 0l14.1 14.1c4.7 4.8 4.7 12.4 0 17.1z" />
+  </svg>
+);
+
 // --- SVGs for Quoting Tool ---
 const CalculatorIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -569,10 +575,25 @@ export default function Home({ setIsAdminView, logoUrl }) {
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
             </svg>
         </div>
-        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block"><SunIcon className="w-32 h-32 text-white/40" /></div>
-        <div className="absolute top-40 left-1/4 text-white/60 animate-float delay-1000 z-10 hidden md:block"><CloudIcon className="w-20 h-20" /></div>
-        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24 text-white/50" /></div>
-        <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10"><StarIcon className="w-10 h-10" /></div>
+
+        {/* Sky Elements - Day Side (Left) */}
+        <div className="absolute top-10 left-10 animate-float z-10 hidden md:block" style={{ animationDelay: '0s' }}><SunIcon className="w-32 h-32 text-white/40" /></div>
+        <div className="absolute top-32 left-[15%] animate-float z-10 hidden md:block" style={{ animationDelay: '1.2s' }}><CloudIcon className="w-24 h-24 text-white/60" /></div>
+        <div className="absolute top-20 left-[35%] animate-float z-10 hidden md:block" style={{ animationDelay: '0.5s' }}><CloudIcon className="w-16 h-16 text-white/40" /></div>
+        <div className="absolute bottom-32 left-10 animate-float z-10 hidden md:block" style={{ animationDelay: '2.5s' }}><CloudIcon className="w-28 h-28 text-white/30" /></div>
+        <div className="absolute bottom-10 left-[25%] animate-float z-10 hidden md:block" style={{ animationDelay: '1.8s' }}><CloudIcon className="w-14 h-14 text-white/50" /></div>
+
+        {/* Sky Elements - Night Side (Right) */}
+        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 animate-pulse z-10"><MoonIcon className="w-24 h-24 text-white/50" /></div>
+        <div className="absolute top-32 right-1/3 animate-float z-10" style={{ animationDelay: '0.3s' }}><StarIcon className="w-8 h-8 text-white/60" /></div>
+        <div className="absolute bottom-40 right-1/4 animate-float z-10" style={{ animationDelay: '0.9s' }}><StarIcon className="w-10 h-10 text-white/50" /></div>
+        <div className="absolute top-1/2 right-[15%] animate-float z-10" style={{ animationDelay: '1.5s' }}><StarIcon className="w-6 h-6 text-white/40" /></div>
+        <div className="absolute bottom-24 right-1/3 animate-pulse z-10" style={{ animationDelay: '2s' }}><StarIcon className="w-12 h-12 text-white/30" /></div>
+        <div className="absolute top-10 right-1/4 animate-float z-10" style={{ animationDelay: '0.7s' }}><StarIcon className="w-5 h-5 text-white/50" /></div>
+        
+        {/* Shooting Stars / Comets */}
+        <div className="absolute top-1/4 right-[40%] animate-float z-10 hidden md:block" style={{ animationDelay: '2.2s' }}><CometIcon className="w-16 h-16 text-white/30 transform rotate-12" /></div>
+        <div className="absolute bottom-1/3 right-10 animate-float z-10 hidden md:block" style={{ animationDelay: '3s' }}><CometIcon className="w-20 h-20 text-white/20 transform -rotate-12" /></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12 animate-on-scroll slide-left">
           <div className="inline-block bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-[2rem] border border-white/50 shadow-lg mx-4">
