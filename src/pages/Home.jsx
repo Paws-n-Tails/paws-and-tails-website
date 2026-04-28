@@ -53,9 +53,11 @@ export default function Home({ setIsAdminView, logoUrl }) {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
     
     const elements = document.querySelectorAll('.animate-on-scroll');
     elements.forEach(el => observer.observe(el));
@@ -188,7 +190,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         .animate-heartbeat { animation: heartbeat 2s ease-in-out infinite; }
         @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-60px); } 100% { opacity: 1; transform: translateX(0); } }
         @keyframes slideInRight { 0% { opacity: 0; transform: translateX(60px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-on-scroll { opacity: 0; }
+        .animate-on-scroll { opacity: 0; transition: opacity 0.3s ease-out; }
         .slide-left.visible { animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .slide-right.visible { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       `}} />
@@ -212,21 +214,33 @@ export default function Home({ setIsAdminView, logoUrl }) {
           <div className="absolute inset-0 bg-[#ffd1bc]/10 mix-blend-multiply"></div>
         </div>
 
+        {/* Floating Icons */}
         <div className="absolute top-20 left-10 text-[#ffd1bc] opacity-80 animate-float" style={{ animationDelay: '0s' }}><HeartIcon className="w-12 h-12" /></div>
         <div className="absolute top-32 right-32 text-[#d65a47] opacity-40 animate-float" style={{ animationDelay: '0.5s' }}><PawIcon className="w-14 h-14" /></div>
         <div className="absolute top-52 right-10 text-[#ffd1bc] opacity-70 animate-float" style={{ animationDelay: '1s' }}><HeartIcon className="w-16 h-16" /></div>
         <div className="absolute top-10 left-1/3 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '0.8s' }}><PawIcon className="w-8 h-8 transform -rotate-12" /></div>
+        <div className="absolute bottom-30 left-10 text-[#d65a47] opacity-15 animate-float" style={{ animationDelay: '1.5s' }}><PawIcon className="w-10 h-10 transform rotate-45" /></div>
+        <div className="absolute bottom-20 right-30 text-[#ffd1bc] opacity-40 animate-float" style={{ animationDelay: '2s' }}><HeartIcon className="w-18 h-18" /></div>
+        <div className="absolute top-70 left-1/4 text-[#d65a47] opacity-25 animate-float" style={{ animationDelay: '2.5s' }}><PawIcon className="w-9 h-9" /></div>
+        <div className="absolute top-60 left-1/2 text-[#ffd1bc] opacity-35 animate-float" style={{ animationDelay: '3s' }}><HeartIcon className="w-14 h-14" /></div>
+        <div className="absolute top-15 right-1/4 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '3.5s' }}><PawIcon className="w-7 h-7 transform rotate-30" /></div>
+        <div className="absolute bottom-10 right-1/2 text-[#ffd1bc] opacity-30 animate-float" style={{ animationDelay: '4s' }}><HeartIcon className="w-15 h-15" /></div>
+        <div className="absolute top-5 right-10 text-[#d65a47] opacity-15 animate-float" style={{ animationDelay: '0.2s' }}><PawIcon className="w-11 h-11 transform rotate-12" /></div>
+        <div className="absolute bottom-40 left-1/5 text-[#ffd1bc] opacity-20 animate-float" style={{ animationDelay: '1s' }}><HeartIcon className="w-13 h-13" /></div>
+        <div className="absolute top-40 right-5 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '2s' }}><PawIcon className="w-9 h-9" /></div>
+        <div className="absolute bottom-5 left-1/2 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '3.2s' }}><HeartIcon className="w-10 h-10" /></div>
+        <div className="absolute top-30 left-1/6 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '1.5s' }}><PawIcon className="w-7 h-7" /></div>
         
         <div className="relative z-10 flex flex-col items-center w-full max-w-3xl text-center mt-6">
           <div className="flex flex-col items-center mb-6">
             <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white shadow-2xl mb-4 overflow-hidden bg-[#3a302a] flex items-center justify-center">
-              <img src={logoUrl} alt="Paws & Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
+              <img src={logoUrl} alt="Paws &amp; Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-[#3a302a] tracking-tight drop-shadow-sm font-serif">
-              PAWS <span className="text-[#d65a47]">&</span> TAILS
+              PAWS <span className="text-[#d65a47]">&amp;</span> TAILS
             </h1>
             <span className="bg-[#3a302a] text-[#ffd1bc] font-bold px-6 py-2 rounded-full mt-3 shadow-md uppercase tracking-wider text-sm border border-[#2d1b13]">
-              Your Pet's Home Away From Home
+              Your Pet&apos;s Home Away From Home
             </span>
           </div>
 
@@ -237,9 +251,41 @@ export default function Home({ setIsAdminView, logoUrl }) {
           </div>
 
           <button onClick={openForm} className="mt-10 bg-[#104b57] hover:bg-[#0c3942] text-white px-10 py-4 rounded-full font-black text-xl transition-all flex items-center justify-center gap-3 shadow-xl hover:-translate-y-1 w-full max-w-sm animate-bounce" style={{ animationDuration: '2.5s' }}>
-            Schedule Meet & Greet!
+            Schedule Meet &amp; Greet!
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </button>
+        </div>
+      </section>
+
+      {/* Love Statement Section */}
+      <section className="bg-[#3a302a] py-24 px-4 relative z-20 overflow-hidden shadow-2xl border-y-8 border-[#ffd1bc]">
+        <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll slide-right">
+          
+          <div className="flex justify-center items-center gap-4 mb-8">
+            <HeartIcon className="w-12 h-12 text-[#ffd1bc] animate-heartbeat drop-shadow-md" style={{ animationDelay: '0s' }} />
+            <HeartIcon className="w-16 h-16 text-[#d65a47] animate-heartbeat drop-shadow-md" style={{ animationDelay: '0.2s' }} />
+            <HeartIcon className="w-12 h-12 text-[#ffd1bc] animate-heartbeat drop-shadow-md" style={{ animationDelay: '0.4s' }} />
+          </div>
+
+          <h2 className="text-3xl md:text-5xl font-black text-white font-serif leading-tight mb-8">
+            At Paws &amp; Tails, we don&apos;t feel the need to charge a premium for something we absolutely <span className="text-[#d65a47]">love</span> doing.
+          </h2>
+          
+          <p className="text-2xl md:text-4xl text-[#ffd1bc] font-black font-serif italic">
+            We do it more out of love than anything else!
+          </p>
+          
+          <div className="absolute top-10 left-10 text-[#ffd1bc] opacity-20 animate-float" style={{ animationDelay: '0.2s' }}><HeartIcon className="w-8 h-8" /></div>
+          <div className="absolute bottom-10 right-20 text-[#d65a47] opacity-30 animate-float" style={{ animationDelay: '0.7s' }}><PawIcon className="w-10 h-10 transform rotate-12" /></div>
+          <div className="absolute top-1/2 left-1/4 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '1.2s' }}><HeartIcon className="w-6 h-6" /></div>
+          <div className="absolute top-1/3 right-10 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '1.7s' }}><PawIcon className="w-5 h-5 transform -rotate-15" /></div>
+          <div className="absolute bottom-20 left-1/2 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '2.2s' }}><HeartIcon className="w-7 h-7" /></div>
+          <div className="absolute bottom-5 left-5 text-[#ffd1bc] opacity-10 animate-float" style={{ animationDelay: '0.1s' }}><HeartIcon className="w-9 h-9 transform -rotate-12" /></div>
+          <div className="absolute top-20 right-1/4 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '0.9s' }}><PawIcon className="w-8 h-8 transform rotate-30" /></div>
+          <div className="absolute top-1/2 right-1/3 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '1.4s' }}><HeartIcon className="w-6 h-6" /></div>
+          <div className="absolute bottom-15 right-10 text-[#ffd1bc] opacity-10 animate-float" style={{ animationDelay: '0.5s' }}><HeartIcon className="w-9 h-9" /></div>
+          <div className="absolute top-5 left-1/3 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '2.1s' }}><PawIcon className="w-7 h-7 transform rotate-45" /></div>
+          
         </div>
       </section>
 
@@ -255,11 +301,10 @@ export default function Home({ setIsAdminView, logoUrl }) {
         <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24 text-white/50" /></div>
         <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10"><StarIcon className="w-10 h-10" /></div>
 
-        <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12">
+        <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12 animate-on-scroll slide-left">
           <div className="inline-block bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-[2rem] border border-white/50 shadow-lg mx-4">
             <p className="text-xl md:text-2xl text-[#3a302a] leading-relaxed font-medium">
-              At Paws & Tails, we don't feel the need to charge a premium for something we absolutely love doing. <br className="hidden md:block" />
-              <strong className="text-[#104b57] font-black block mt-2 text-2xl md:text-3xl font-serif">We do it more out of love than anything else!</strong>
+              We make each pet feel uniquely comfortable and loved. Check out our transparent pricing below!
             </p>
           </div>
         </div>
@@ -269,15 +314,15 @@ export default function Home({ setIsAdminView, logoUrl }) {
             <div className="p-4 bg-[#d65a47]/10 rounded-full mb-6"><SunIcon className="w-12 h-12 text-[#d65a47]" /></div>
             <h3 className="text-3xl font-black text-[#3a302a] mb-3 font-serif">Day Care</h3>
             <span className="bg-[#d65a47]/10 text-[#d65a47] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block">7am to 7pm</span>
-            <p className="text-gray-600 leading-relaxed mb-8 font-medium">Your pup's home away from home! We offer our fun and playful pet day care service from 7am to 7pm.</p>
+            <p className="text-gray-600 leading-relaxed mb-8 font-medium">Your pup&apos;s home away from home! We offer our fun and playful pet day care service from 7am to 7pm.</p>
             <div className="text-4xl font-black text-[#d65a47] mt-auto drop-shadow-sm">$50<span className="text-xl text-gray-400">/day</span></div>
           </div>
 
           <div className="bg-[#0b2931]/95 backdrop-blur-sm rounded-[3rem] p-10 shadow-xl border-4 border-[#104b57] transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center">
             <div className="p-4 bg-[#104b57] rounded-full mb-6"><MoonIcon className="w-12 h-12 text-[#ffd1bc]" /></div>
             <h3 className="text-3xl font-black text-white mb-3 font-serif">Over Night</h3>
-            <span className="bg-[#104b57] text-[#ffd1bc] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block shadow-inner">Full Day & Night</span>
-            <p className="text-gray-300 leading-relaxed mb-8 font-medium">Your pet's cozy overnight retreat! They can choose between their bed or ours, ensuring a restful night's sleep.</p>
+            <span className="bg-[#104b57] text-[#ffd1bc] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block shadow-inner">Full Day &amp; Night</span>
+            <p className="text-gray-300 leading-relaxed mb-8 font-medium">Your pet&apos;s cozy overnight retreat! They can choose between their bed or ours, ensuring a restful night&apos;s sleep.</p>
             <div className="text-4xl font-black text-[#ffd1bc] mt-auto drop-shadow-sm">$80<span className="text-xl text-[#608d96] font-medium ml-1">/night</span></div>
           </div>
         </div>
@@ -296,7 +341,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#104b57] via-[#104b57]/40 to-transparent"></div>
               <div className="absolute bottom-8 left-8 right-8 text-white z-10">
-                <h3 className="text-3xl lg:text-4xl font-black font-serif mb-2 leading-tight">We can't wait to meet your best friend!</h3>
+                <h3 className="text-3xl lg:text-4xl font-black font-serif mb-2 leading-tight">We can&apos;t wait to meet your best friend!</h3>
                 <p className="text-[#ffd1bc] font-bold text-lg">Schedule a quick 15-minute intro at our home.</p>
               </div>
             </div>
@@ -314,13 +359,13 @@ export default function Home({ setIsAdminView, logoUrl }) {
                   <p className="text-gray-600 text-lg font-medium leading-relaxed mb-8">
                     We have received your request. All appointments must be manually approved by our team before being confirmed. We will contact you shortly to finalize!
                   </p>
-                  <button onClick={() => setShowForm(false)} className="bg-[#104b57] text-white font-black px-10 py-4 rounded-xl hover:bg-[#0c3942] transition-colors shadow-lg">Close & Return</button>
+                  <button onClick={() => setShowForm(false)} className="bg-[#104b57] text-white font-black px-10 py-4 rounded-xl hover:bg-[#0c3942] transition-colors shadow-lg">Close &amp; Return</button>
                 </div>
               ) : (
                 <div className="relative z-10">
                   <div className="mb-10">
-                    <h2 className="text-3xl md:text-4xl font-black text-[#3a302a] font-serif mb-3 flex items-center gap-3">Let's Get Started! <PawIcon className="w-8 h-8 text-[#d65a47]" /></h2>
-                    <p className="text-gray-500 font-medium text-lg">Just three quick steps to schedule your meet & greet.</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-[#3a302a] font-serif mb-3 flex items-center gap-3">Let&apos;s Get Started! <PawIcon className="w-8 h-8 text-[#d65a47]" /></h2>
+                    <p className="text-gray-500 font-medium text-lg">Just three quick steps to schedule your meet &amp; greet.</p>
                   </div>
                   
                   <form onSubmit={handleFormSubmit}>
@@ -333,7 +378,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                     {formStep === 1 && (
                       <div className="space-y-5 p-2">
                         <h3 className="font-black text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/10 pb-4">1. Human Details</h3>
-                        <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Owner's Name</label><input type="text" required value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
+                        <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Owner&apos;s Name</label><input type="text" required value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Email</label><input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Phone</label><input type="tel" required value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
                       </div>
@@ -345,7 +390,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                           <div className="md:col-span-2">
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Pet's Name</label>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Pet&apos;s Name</label>
                             <input type="text" required value={formData.petName} onChange={(e) => setFormData({...formData, petName: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors" />
                           </div>
                           
@@ -388,7 +433,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
 
                     {formStep === 3 && (
                       <div className="space-y-5 p-2">
-                        <h3 className="font-bold text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/10 pb-4">3. Meet & Greet</h3>
+                        <h3 className="font-bold text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/10 pb-4">3. Meet &amp; Greet</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Date</label>
@@ -480,7 +525,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         </div>
       </section>
 
-      {/* ---------------- NEW GOOGLE REVIEWS SECTION ---------------- */}
+      {/* ---------------- GOOGLE REVIEWS SECTION ---------------- */}
       <section id="reviews" className="w-full bg-white border-y-8 border-[#ffd1bc] py-24 px-4 shadow-inner relative z-20 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           
@@ -519,7 +564,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                 <div className="flex gap-0.5 mb-3">
                   {[...Array(5)].map((_, i) => <GoogleStarIcon key={i} />)}
                 </div>
-                <p className="text-gray-600 text-sm font-medium leading-relaxed">"{review.text}"</p>
+                <p className="text-gray-600 text-sm font-medium leading-relaxed">&quot;{review.text}&quot;</p>
               </div>
             ))}
           </div>
