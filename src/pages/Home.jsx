@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { HeartIcon, PawIcon, SunIcon, MoonIcon, CloudIcon, StarIcon, CheckCircleIcon } from '../components/Icons';
+import { HeartIcon, PawIcon, SunIcon, MoonIcon, CloudIcon, CheckCircleIcon } from '../components/Icons';
 
 // --- SVGs for Google Reviews ---
 const GoogleStarIcon = () => (
@@ -19,9 +19,9 @@ const GoogleG = () => (
   </svg>
 );
 
-const CometIcon = ({ className, style }) => (
-  <svg className={className} style={style} viewBox="0 0 512 512" fill="currentColor">
-    <path d="M474.2 37.8c-14.8-14.8-37.4-17-54.8-5.3L275.5 129.4c-8.9-5-19.5-6-29.2-2.5l-65.7 23.9c-10.9 4-16.5 16-12.5 26.9l23.9 65.7c3.5 9.7 2.5 20.3-2.5 29.2L96.5 416.5c-11.7 17.4-9.5 40 5.3 54.8s37.4 17 54.8 5.3l144.1-96.9c8.9 5 19.5 6 29.2 2.5l65.7-23.9c10.9-4 16.5-16 12.5-26.9l-23.9-65.7c-3.5-9.7-2.5-20.3 2.5-29.2l96.9-144.1c11.7-17.4 9.5-40-5.3-54.8zm-268 288.5l-19.6 19.6c-4.7 4.7-12.3 4.7-17 0l-14.1-14.1c-4.7-4.7-4.7-12.3 0-17l19.6-19.6c4.7-4.7 12.3-4.7 17 0l14.1 14.1c4.7 4.7 4.7 12.3 0 17zm33.9-33.9l-19.6 19.6c-4.7 4.7-12.3 4.7-17 0l-14.1-14.1c-4.7-4.7-4.7-12.3 0-17l19.6-19.6c4.7-4.7 12.3-4.7 17 0l14.1 14.1c4.7 4.8 4.7 12.4 0 17.1z" />
+const StarIcon = ({ className, style }) => (
+  <svg className={className} style={style} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/>
   </svg>
 );
 
@@ -470,6 +470,14 @@ export default function Home({ setIsAdminView, logoUrl }) {
         .animate-heartbeat { animation: heartbeat 2s ease-in-out infinite; }
         @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-60px); } 100% { opacity: 1; transform: translateX(0); } }
         @keyframes slideInRight { 0% { opacity: 0; transform: translateX(60px); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes fallingStar {
+          0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translate(-300px, 300px) rotate(360deg) scale(0.2); opacity: 0; }
+        }
+        .animate-falling { animation: fallingStar 4s linear infinite; }
+
         .animate-on-scroll { opacity: 0; transition: opacity 0.4s ease-out; }
         .slide-left.visible { animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .slide-right.visible { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -591,9 +599,10 @@ export default function Home({ setIsAdminView, logoUrl }) {
         <div className="absolute bottom-24 right-1/3 animate-pulse z-10" style={{ animationDelay: '2s' }}><StarIcon className="w-12 h-12 text-white/30" /></div>
         <div className="absolute top-10 right-1/4 animate-float z-10" style={{ animationDelay: '0.7s' }}><StarIcon className="w-5 h-5 text-white/50" /></div>
         
-        {/* Shooting Stars / Comets */}
-        <div className="absolute top-1/4 right-[40%] animate-float z-10 hidden md:block" style={{ animationDelay: '2.2s' }}><CometIcon className="w-16 h-16 text-white/30 transform rotate-12" /></div>
-        <div className="absolute bottom-1/3 right-10 animate-float z-10 hidden md:block" style={{ animationDelay: '3s' }}><CometIcon className="w-20 h-20 text-white/20 transform -rotate-12" /></div>
+        {/* Falling Stars (replacing comets) */}
+        <div className="absolute top-0 right-1/4 animate-falling z-10 hidden md:block" style={{ animationDelay: '2.5s' }}><StarIcon className="w-6 h-6 text-white/50" /></div>
+        <div className="absolute top-1/3 right-[10%] animate-falling z-10 hidden md:block" style={{ animationDelay: '5s' }}><StarIcon className="w-8 h-8 text-white/60" /></div>
+        <div className="absolute top-1/2 right-[30%] animate-falling z-10 hidden md:block" style={{ animationDelay: '7.5s' }}><StarIcon className="w-4 h-4 text-white/40" /></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12 animate-on-scroll slide-left">
           <div className="inline-block bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-[2rem] border border-white/50 shadow-lg mx-4">
