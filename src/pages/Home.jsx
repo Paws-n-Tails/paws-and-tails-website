@@ -537,13 +537,13 @@ export default function Home({ setIsAdminView, logoUrl }) {
 
           {/* Centered Google Header */}
           <div className="flex flex-col items-center justify-center mb-16 animate-on-scroll slide-right">
-            <div className="flex items-center gap-4 mb-3">
-              <span className="text-6xl md:text-7xl font-black text-gray-800 tracking-tighter">5.0</span>
-              <GoogleG />
-            </div>
-            <div className="flex gap-1.5">
+            <span className="text-6xl md:text-7xl font-black text-gray-800 tracking-tighter mb-2">
+              5.0
+            </span>
+            <div className="flex gap-1.5 mb-4">
               {[...Array(5)].map((_, i) => <GoogleStarIcon key={`star-top-${i}`} />)}
             </div>
+            <GoogleG />
           </div>
 
           {/* Reviews Grid */}
