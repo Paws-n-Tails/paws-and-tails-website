@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function App() {
   const [isHovered, setIsHovered] = useState(null);
@@ -9,8 +9,27 @@ export default function App() {
   const [chatInput, setChatInput] = useState('');
   const [openFaq, setOpenFaq] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [formStep, setFormStep] = useState(1); // Multi-step form state
   
-  const logoUrl = "https://ngjloklpwtdzfeezrvru.supabase.co/storage/v1/object/public/images/admin-generations/unassigned-exterior-1:1-square-1777336252321.jpg";
+  const logoUrl = "https://ngjloklpwtdzfeezrvru.supabase.co/storage/v1/object/public/images/admin-generations/unassigned-exterior-4:3-standard-1777350618285.jpg";
+
+  // Intersection Observer for scroll animations (Reviews)
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    elements.forEach(el => observer.observe(el));
+    
+    return () => {
+      elements.forEach(el => observer.unobserve(el));
+    };
+  }, []);
 
   // New gallery images provided
   const galleryImages = [
@@ -56,6 +75,9 @@ export default function App() {
     }, 1000);
   };
 
+  const nextFormStep = () => setFormStep(prev => Math.min(prev + 1, 3));
+  const prevFormStep = () => setFormStep(prev => Math.max(prev - 1, 1));
+
   return (
     <div className="min-h-screen bg-[#fdf8f5] font-sans text-gray-800 flex flex-col overflow-x-hidden">
       {/* Custom Animations */}
@@ -64,9 +86,8 @@ export default function App() {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-15px) rotate(5deg); }
         }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        
         @keyframes heartbeat {
           0%, 100% { transform: scale(1); }
           15% { transform: scale(1.15); }
@@ -74,8 +95,29 @@ export default function App() {
           45% { transform: scale(1.15); }
           60% { transform: scale(1); }
         }
-        .animate-heartbeat {
-          animation: heartbeat 2s ease-in-out infinite;
+        .animate-heartbeat { animation: heartbeat 2s ease-in-out infinite; }
+
+        /* Review Animations */
+        @keyframes slideInLeft {
+          0% { opacity: 0; transform: translateX(-60px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInRight {
+          0% { opacity: 0; transform: translateX(60px); }
+          100% { opacity: 1; transform: translateX(0); }
+        }
+        .animate-on-scroll { opacity: 0; }
+        .slide-left.visible { animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .slide-right.visible { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Star Fill Animation */
+        @keyframes fillStarAnim {
+          0% { color: #d1d5db; transform: scale(1); }
+          50% { transform: scale(1.4); }
+          100% { color: #d65a47; transform: scale(1); }
+        }
+        .visible .star-animate {
+          animation: fillStarAnim 0.5s ease-out forwards;
         }
       `}} />
 
@@ -124,18 +166,45 @@ export default function App() {
           <PawIcon className="w-10 h-10" />
         </div>
 
+        {/* NEW EXTRA HEARTS & PAWS */}
+        <div className="absolute top-10 left-1/3 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '0.8s' }}>
+          <PawIcon className="w-8 h-8 transform -rotate-12" />
+        </div>
+        <div className="absolute top-40 left-1/4 text-[#ffd1bc] opacity-60 animate-float" style={{ animationDelay: '1.2s' }}>
+          <HeartIcon className="w-8 h-8 transform rotate-12" />
+        </div>
+        <div className="absolute bottom-10 left-1/4 text-[#3a302a] opacity-15 animate-float" style={{ animationDelay: '0.3s' }}>
+          <PawIcon className="w-12 h-12 transform rotate-45" />
+        </div>
+        <div className="absolute bottom-32 right-12 text-[#ffd1bc] opacity-50 animate-float" style={{ animationDelay: '2.2s' }}>
+          <HeartIcon className="w-14 h-14 transform -rotate-12" />
+        </div>
+        <div className="absolute top-1/4 right-1/4 text-[#d65a47] opacity-25 animate-float" style={{ animationDelay: '1.7s' }}>
+          <HeartIcon className="w-10 h-10 transform rotate-45" />
+        </div>
+        <div className="absolute top-16 right-1/3 text-[#3a302a] opacity-10 animate-float" style={{ animationDelay: '0.9s' }}>
+          <PawIcon className="w-16 h-16 transform -rotate-45" />
+        </div>
+        <div className="absolute bottom-1/3 left-4 text-[#d65a47] opacity-40 animate-float" style={{ animationDelay: '1.8s' }}>
+          <HeartIcon className="w-8 h-8 transform -rotate-12" />
+        </div>
+        <div className="absolute bottom-1/4 right-1/3 text-[#ffd1bc] opacity-60 animate-float" style={{ animationDelay: '2.8s' }}>
+          <PawIcon className="w-10 h-10 transform rotate-12" />
+        </div>
+
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col items-center w-full max-w-3xl text-center mt-6">
-          {/* Logo Box - Stationary */}
+          {/* Logo Box - Circle Frame */}
           <div className="flex flex-col items-center mb-6">
-            <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white shadow-2xl mb-4 overflow-hidden bg-white flex items-center justify-center">
+            <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white shadow-2xl mb-4 overflow-hidden bg-[#3a302a] flex items-center justify-center">
               <img 
                 src={logoUrl} 
                 alt="Paws & Tails" 
-                className="w-full h-full object-cover transform scale-[1.85] object-center"
+                className="w-full h-full object-cover object-center transform scale-[1.2]"
                 onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=150&q=80' }}
               />
             </div>
+            
             <h1 className="text-4xl md:text-6xl font-black text-[#3a302a] tracking-tight drop-shadow-sm font-serif">
               PAWS <span className="text-[#d65a47]">&</span> TAILS
             </h1>
@@ -155,6 +224,7 @@ export default function App() {
           <button 
             onClick={() => {
               setShowForm(true);
+              setFormStep(1); // Reset to step 1
               setTimeout(() => document.getElementById('onboarding-form')?.scrollIntoView({ behavior: 'smooth' }), 100);
             }}
             className="mt-10 bg-[#104b57] hover:bg-[#0c3942] text-white px-10 py-4 rounded-full font-black text-xl transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-[#104b57]/40 hover:-translate-y-1 w-full max-w-sm animate-bounce" style={{ animationDuration: '2.5s' }}>
@@ -197,24 +267,42 @@ export default function App() {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="bg-[#ffd1bc] py-24 px-4 relative">
-        {/* Wavy top border using SVG */}
-        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -mt-1 flex text-[#3a302a]">
+      {/* Services Section - Day to Night Morph */}
+      <section className="bg-gradient-to-b md:bg-gradient-to-r from-[#ffd1bc] via-[#a3b1c6] to-[#104b57] py-24 px-4 relative overflow-hidden">
+        {/* Wavy top border using SVG - colored white to match the section above */}
+        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -mt-1 flex text-white z-20">
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-12 fill-current">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
             </svg>
         </div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 text-center relative z-10 pt-10">
+        {/* Day / Night Background Decorations */}
+        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block">
+          <SunIcon className="w-32 h-32 text-white/40" />
+        </div>
+        <div className="absolute top-40 left-1/4 text-white/60 animate-float delay-1000 z-10 hidden md:block">
+          <CloudIcon className="w-20 h-20" />
+        </div>
+        
+        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10">
+          <MoonIcon className="w-24 h-24 text-white/50" />
+        </div>
+        <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10">
+          <StarIcon className="w-10 h-10" />
+        </div>
+        <div className="absolute top-1/2 right-10 text-white/40 animate-float delay-700 z-10">
+          <StarIcon className="w-6 h-6" />
+        </div>
+
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 text-center relative z-20 pt-10">
           {/* Day Care Card */}
           <div 
-            className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center"
+            className="bg-white/95 backdrop-blur-sm rounded-[3rem] p-10 shadow-xl border-4 border-white transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center"
             onMouseEnter={() => setIsHovered('day')}
             onMouseLeave={() => setIsHovered(null)}
           >
             <div className={`p-4 bg-[#d65a47]/10 rounded-full mb-6 transition-transform duration-300 ${isHovered === 'day' ? 'rotate-12 scale-110' : ''}`}>
-              <svg className="w-12 h-12 text-[#d65a47]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+              <SunIcon className="w-12 h-12 text-[#d65a47]" />
             </div>
             <h3 className="text-3xl font-black text-[#3a302a] mb-3 font-serif">Day Care</h3>
             <span className="bg-[#d65a47]/10 text-[#d65a47] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block">7am to 7pm</span>
@@ -224,49 +312,59 @@ export default function App() {
             <div className="text-4xl font-black text-[#d65a47] mt-auto drop-shadow-sm">$50<span className="text-xl text-gray-400">/day</span></div>
           </div>
 
-          {/* Over Night Card */}
+          {/* Over Night Card (Dark Theme) */}
           <div 
-            className="bg-white rounded-[3rem] p-10 shadow-xl border-4 border-white transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center"
+            className="bg-[#0b2931]/95 backdrop-blur-sm rounded-[3rem] p-10 shadow-xl border-4 border-[#104b57] transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center"
             onMouseEnter={() => setIsHovered('night')}
             onMouseLeave={() => setIsHovered(null)}
           >
-            <div className={`p-4 bg-[#104b57]/10 rounded-full mb-6 transition-transform duration-300 ${isHovered === 'night' ? '-rotate-12 scale-110' : ''}`}>
-              <svg className="w-12 h-12 text-[#104b57]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            <div className={`p-4 bg-[#104b57] rounded-full mb-6 transition-transform duration-300 ${isHovered === 'night' ? '-rotate-12 scale-110' : ''}`}>
+              <MoonIcon className="w-12 h-12 text-[#ffd1bc]" />
             </div>
-            <h3 className="text-3xl font-black text-[#3a302a] mb-3 font-serif">Over Night</h3>
-            <span className="bg-[#104b57]/10 text-[#104b57] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block">Full Day & Night</span>
-            <p className="text-gray-600 leading-relaxed mb-8 font-medium">
+            <h3 className="text-3xl font-black text-white mb-3 font-serif">Over Night</h3>
+            <span className="bg-[#104b57] text-[#ffd1bc] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block shadow-inner">Full Day & Night</span>
+            <p className="text-gray-300 leading-relaxed mb-8 font-medium">
               Your pet's cozy overnight retreat! They can choose between their bed or ours, ensuring a restful night's sleep. Because at Paws & Tails, we believe well-rested pets are happy pets!
             </p>
-            <div className="text-4xl font-black text-[#104b57] mt-auto drop-shadow-sm">$80<span className="text-xl text-gray-400">/night</span></div>
+            <div className="text-4xl font-black text-[#ffd1bc] mt-auto drop-shadow-sm">$80<span className="text-xl text-[#608d96] font-medium ml-1">/night</span></div>
           </div>
         </div>
       </section>
 
-      {/* Interview Banner */}
-      <section className="bg-black py-16 px-4 flex flex-col items-center text-center relative overflow-hidden shadow-inner border-y border-[#3a302a]">
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-block bg-[#ffd1bc] text-black px-6 py-2 rounded-full font-black uppercase tracking-widest text-sm mb-6 shadow-md transform -rotate-2">
-            Step 1
+      {/* Interview Banner - ON-BRAND THEME */}
+      <section className="bg-[#fdf8f5] py-24 px-4 flex flex-col items-center text-center relative overflow-hidden border-t border-black/5 z-20">
+        {/* Faint Background Paws & Hearts */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <PawIcon className="absolute top-10 left-10 w-16 h-16 text-[#ffd1bc] opacity-80 transform -rotate-12 animate-float" />
+          <HeartIcon className="absolute bottom-10 right-10 w-20 h-20 text-[#d65a47] opacity-20 transform rotate-12 animate-pulse" />
+          <PawIcon className="absolute top-1/2 right-20 w-12 h-12 text-[#3a302a] opacity-10 transform rotate-45 animate-float" style={{ animationDelay: '1s' }} />
+          <HeartIcon className="absolute bottom-20 left-20 w-10 h-10 text-[#ffd1bc] opacity-60 transform -rotate-12 animate-float" style={{ animationDelay: '0.5s' }} />
+        </div>
+        
+        <div className="relative z-10 max-w-4xl flex flex-col items-center">
+          <div className="inline-block bg-[#ffd1bc] text-[#3a302a] px-8 py-3 rounded-full font-black uppercase tracking-widest text-sm mb-8 shadow-sm">
+            Step 1: The Interview
           </div>
-          <p className="text-white text-lg md:text-xl leading-relaxed mb-8 font-bold drop-shadow-sm">
+          <p className="text-[#3a302a] text-2xl md:text-4xl leading-relaxed mb-10 font-bold font-serif max-w-3xl">
             We request that all new customers participate in a brief in-person interview to ensure perfect compatibility for you, your beloved pet, and our services!
           </p>
           <button 
             onClick={() => {
               setShowForm(true);
+              setFormStep(1); // Reset to step 1
               setTimeout(() => document.getElementById('onboarding-form')?.scrollIntoView({ behavior: 'smooth' }), 100);
             }}
-            className="bg-[#ffd1bc] text-black hover:bg-[#ffc1a4] font-black text-lg px-10 py-4 rounded-full transition-all shadow-[0_0_15px_rgba(255,209,188,0.2)] hover:shadow-[0_0_25px_rgba(255,209,188,0.4)] hover:-translate-y-1 transform">
+            className="bg-[#104b57] text-white hover:bg-[#0c3942] font-black text-xl px-12 py-5 rounded-full transition-all duration-300 shadow-xl transform hover:-translate-y-1 flex items-center gap-3">
             Schedule Meet & Greet!
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </button>
         </div>
       </section>
 
-      {/* Onboarding Form & Calendar Section */}
+      {/* Multi-Step Onboarding Form */}
       {showForm && (
         <section className="bg-[#fdf8f5] py-16 px-4 relative shadow-inner border-b-8 border-[#ffd1bc]" id="onboarding-form">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <div className="text-center mb-10">
               <h2 className="text-4xl font-black text-[#3a302a] font-serif mb-4 flex items-center justify-center gap-3">
                 Let's Get Started! <PawIcon className="w-9 h-9 text-[#d65a47]" />
@@ -274,59 +372,83 @@ export default function App() {
               <p className="text-gray-600 font-medium text-lg">Tell us about you and your furry friend to schedule your meet & greet.</p>
             </div>
             
-            <form className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border-4 border-[#ffd1bc] grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Human Info */}
-              <div className="space-y-4">
-                <h3 className="font-bold text-xl text-[#3a302a] mb-4 border-b-2 border-[#3a302a]/20 pb-2">1. Human Details</h3>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Owner's Name</label>
-                  <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. Jane Doe" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Email Address</label>
-                  <input type="email" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="jane@example.com" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
-                  <input type="tel" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="(555) 123-4567" />
-                </div>
+            <form className="bg-white p-6 md:p-12 rounded-[3rem] shadow-xl border-4 border-[#ffd1bc]">
+              
+              {/* Progress Indicator */}
+              <div className="flex justify-center mb-10 gap-2 md:gap-4">
+                <div className={`h-3 w-16 md:w-24 rounded-full transition-colors duration-500 ${formStep >= 1 ? 'bg-[#d65a47]' : 'bg-gray-200'}`}></div>
+                <div className={`h-3 w-16 md:w-24 rounded-full transition-colors duration-500 ${formStep >= 2 ? 'bg-[#d65a47]' : 'bg-gray-200'}`}></div>
+                <div className={`h-3 w-16 md:w-24 rounded-full transition-colors duration-500 ${formStep >= 3 ? 'bg-[#104b57]' : 'bg-gray-200'}`}></div>
               </div>
 
-              {/* Pet Info */}
-              <div className="space-y-4">
-                <h3 className="font-bold text-xl text-[#d65a47] mb-4 border-b-2 border-[#d65a47]/20 pb-2 flex items-center gap-2">
-                  <PawIcon className="w-6 h-6 text-[#d65a47]" />
-                  2. Pet Details
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="col-span-2">
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Pet's Name</label>
-                    <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. Bella" />
+              {/* Step 1: Human Info (On-Brand Theme) */}
+              {formStep === 1 && (
+                <div className="relative space-y-5 bg-[#fff3ec] p-6 md:p-10 rounded-3xl text-[#3a302a] border-4 border-[#ffd1bc] animate-[slideInRight_0.4s_ease-out_forwards] overflow-hidden">
+                  {/* Soft decorative background element */}
+                  <div className="absolute -top-10 -right-10 w-48 h-48 bg-[#ffd1bc] rounded-full opacity-30 pointer-events-none"></div>
+                  
+                  <div className="relative z-10 border-b-2 border-[#ffd1bc] pb-6 mb-8 flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="bg-white p-3 rounded-full shadow-sm inline-flex transform rotate-12">
+                       <HeartIcon className="w-8 h-8 text-[#d65a47]" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-3xl text-[#3a302a] font-serif tracking-wide">1. Human Details</h3>
+                      <p className="text-gray-600 font-bold text-sm mt-1">Let's get to know you first! How can we reach you?</p>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Breed</label>
-                    <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. Pug" />
+                  
+                  <div className="relative z-10">
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Owner's Name</label>
+                    <input type="text" className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:ring-2 focus:ring-[#d65a47]/20 bg-white text-gray-800 placeholder-gray-400 transition-all text-lg shadow-sm" placeholder="e.g. Jane Doe" />
                   </div>
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Age</label>
-                    <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. 3 years" />
+                  <div className="relative z-10">
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Email Address</label>
+                    <input type="email" className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:ring-2 focus:ring-[#d65a47]/20 bg-white text-gray-800 placeholder-gray-400 transition-all text-lg shadow-sm" placeholder="jane@example.com" />
                   </div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Upload Photo of Dog</label>
-                    <input type="file" accept="image/*" className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#104b57]/10 file:text-[#104b57] hover:file:bg-[#104b57]/20 cursor-pointer" />
+                  <div className="relative z-10">
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Phone Number</label>
+                    <input type="tel" className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:ring-2 focus:ring-[#d65a47]/20 bg-white text-gray-800 placeholder-gray-400 transition-all text-lg shadow-sm" placeholder="(555) 123-4567" />
                   </div>
                 </div>
-              </div>
+              )}
 
-              {/* Schedule Info */}
-              <div className="space-y-4 md:col-span-2 mt-4">
-                <h3 className="font-bold text-xl text-[#104b57] mb-4 border-b-2 border-[#104b57]/20 pb-2">3. Meet & Greet Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                     <label className="block text-sm font-bold text-gray-700 mb-1">When do you plan to use our service?</label>
-                     <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 text-gray-700" placeholder="e.g. Next month, Summer holidays..." />
+              {/* Step 2: Pet Info */}
+              {formStep === 2 && (
+                <div className="space-y-5 p-2 animate-[slideInRight_0.4s_ease-out_forwards]">
+                  <h3 className="font-black text-2xl text-[#d65a47] mb-6 border-b-2 border-[#d65a47]/20 pb-4 flex items-center gap-2">
+                    <PawIcon className="w-6 h-6 text-[#d65a47]" />
+                    2. Pet Details
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Pet's Name</label>
+                      <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. Bella" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Breed</label>
+                      <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. Pug" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Age</label>
+                      <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50" placeholder="e.g. 3 years" />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Upload Photo of Dog</label>
+                      <input type="file" accept="image/*" className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#104b57]/10 file:text-[#104b57] hover:file:bg-[#104b57]/20 cursor-pointer" />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                </div>
+              )}
+
+              {/* Step 3: Schedule Info */}
+              {formStep === 3 && (
+                <div className="space-y-5 p-2 animate-[slideInRight_0.4s_ease-out_forwards]">
+                  <h3 className="font-bold text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/20 pb-4">3. Meet & Greet Details</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                       <label className="block text-sm font-bold text-gray-700 mb-1">When do you plan to use our service?</label>
+                       <input type="text" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 text-gray-700" placeholder="e.g. Next month, Summer holidays..." />
+                    </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-1">Meet & Greet Date</label>
                       <input type="date" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 text-gray-700" />
@@ -335,29 +457,40 @@ export default function App() {
                       <label className="block text-sm font-bold text-gray-700 mb-1">Time</label>
                       <input type="time" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 text-gray-700" />
                     </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Additional Information</label>
-                    <textarea rows="3" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 text-gray-700 resize-none" placeholder="Tell us anything else we should know about your furry friend..."></textarea>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-bold text-gray-700 mb-1">Additional Information</label>
+                      <textarea rows="3" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:ring-2 focus:ring-[#104b57]/20 transition-all bg-gray-50 text-gray-700 resize-none" placeholder="Tell us anything else we should know about your furry friend..."></textarea>
+                    </div>
                   </div>
                 </div>
+              )}
+
+              {/* Form Navigation Controls */}
+              <div className="pt-8 mt-6 flex justify-between items-center border-t-2 border-gray-100">
+                {formStep > 1 ? (
+                  <button type="button" onClick={prevFormStep} className="bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800 font-bold px-6 py-3 rounded-xl transition-colors">
+                    Back
+                  </button>
+                ) : <div></div> /* Empty div to maintain flex spacing */}
+                
+                {formStep < 3 ? (
+                  <button type="button" onClick={nextFormStep} className="bg-[#104b57] hover:bg-[#0c3942] text-white font-black px-8 py-3 rounded-xl shadow-lg transform transition-all hover:-translate-y-1">
+                    Next Step
+                  </button>
+                ) : (
+                  <button type="button" onClick={() => alert("Thanks! We've received your request and will confirm shortly.")} className="bg-[#d65a47] hover:bg-[#c44a38] text-white font-black px-10 py-3 rounded-xl shadow-lg transform transition-all hover:-translate-y-1">
+                    Submit Request
+                  </button>
+                )}
               </div>
 
-              <div className="md:col-span-2 pt-4">
-                <button 
-                  type="button" 
-                  onClick={() => alert("Thanks! We've received your request and will confirm shortly.")}
-                  className="w-full bg-[#104b57] hover:bg-[#0c3942] text-white font-black text-xl py-4 rounded-2xl shadow-lg transform transition-all hover:-translate-y-1">
-                  Submit Request
-                </button>
-              </div>
             </form>
           </div>
         </section>
       )}
 
       {/* Instagram Gallery Section */}
-      <section className="bg-[#fdf8f5] py-20 px-4 relative border-y border-black/5 shadow-sm z-20">
+      <section className="bg-[#ffd1bc] py-20 px-4 relative border-y-8 border-white shadow-sm z-20">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center text-center mb-10">
             <a href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="inline-block bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-1 rounded-full mb-4 transform hover:scale-110 transition-transform shadow-md">
@@ -366,8 +499,8 @@ export default function App() {
               </div>
             </a>
             <h2 className="text-4xl md:text-5xl font-black text-[#3a302a] font-serif mb-2 drop-shadow-sm">Follow Our Adventures</h2>
-            <a href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="text-[#d65a47] font-bold text-xl hover:underline mb-2">@pawsandtails_nj</a>
-            <p className="text-gray-500 font-medium text-sm">Follow us on Instagram to see our happy campers in action!</p>
+            <a href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="text-[#104b57] font-black text-xl hover:underline mb-2">@pawsandtails_nj</a>
+            <p className="text-[#3a302a]/80 font-bold text-sm">Follow us on Instagram to see our happy campers in action!</p>
           </div>
           
           <div className="grid grid-cols-3 gap-1 md:gap-3">
@@ -401,7 +534,7 @@ export default function App() {
               href="https://www.instagram.com/pawsandtails_nj/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#3a302a] hover:bg-[#d65a47] text-white px-8 py-4 rounded-full font-bold transition-all transform hover:-translate-y-1 shadow-lg text-lg"
+              className="inline-flex items-center gap-2 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 hover:opacity-90 text-white px-8 py-4 rounded-full font-bold transition-all transform hover:-translate-y-1 shadow-lg text-lg"
             >
               <InstagramIcon className="w-6 h-6" />
               View on Instagram
@@ -423,18 +556,7 @@ export default function App() {
            <div className="absolute top-8 left-8 bg-[#d65a47] text-white font-black text-sm md:text-base uppercase tracking-widest py-2 px-6 rounded-full shadow-xl transform -rotate-6 border-2 border-white animate-float">
              ★ Best Value ★
            </div>
-
-           <div className="absolute bottom-8 left-8 max-w-sm bg-white/95 backdrop-blur-md p-5 rounded-3xl shadow-xl border-2 border-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-             <div className="flex items-center gap-4">
-               <div className="bg-[#ffd1bc] p-3 rounded-full shadow-inner border border-white">
-                 <PawIcon className="w-8 h-8 text-[#d65a47]" />
-               </div>
-               <div>
-                 <p className="font-black text-[#3a302a] text-lg leading-tight mb-0.5">Unlimited Playtime</p>
-                 <p className="text-sm text-gray-600 font-bold">Treat Your Pets Like VIPs!</p>
-               </div>
-             </div>
-           </div>
+           {/* Removed unlimited playtime box as requested */}
         </div>
         
         <div className="md:w-1/2 w-full bg-white flex flex-col justify-center items-start text-left p-8 md:p-12 relative z-10">
@@ -468,17 +590,15 @@ export default function App() {
       </section>
 
       {/* Google Reviews Section */}
-      <section className="w-full bg-white border-y-8 border-[#ffd1bc] py-16 px-4 shadow-inner relative z-20">
+      <section className="w-full bg-white border-y-8 border-[#ffd1bc] py-16 px-4 shadow-inner relative z-20 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col items-center text-center mb-12">
             <div className="flex items-center gap-2 text-2xl font-black text-[#3a302a] font-serif mb-2">
               <span className="text-4xl text-[#d65a47]">5.0</span>
               <div className="flex text-[#d65a47]">
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-6 h-6 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                ))}
               </div>
             </div>
             <h2 className="text-3xl font-black text-[#3a302a] mt-4 font-serif">See what our pet parents are saying!</h2>
@@ -486,16 +606,20 @@ export default function App() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((review, i) => (
-              <div key={i} className="bg-[#fdf8f5] p-6 rounded-3xl border border-black/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              // Left slide for Odds (index 0, 2, 4), Right slide for Evens (index 1, 3, 5)
+              <div key={i} className={`animate-on-scroll ${i % 2 === 0 ? 'slide-left' : 'slide-right'} bg-[#fdf8f5] p-6 rounded-3xl border border-black/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300`}>
                 <div className="flex items-center gap-4 mb-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${review.color}`}>
                     {review.initial}
                   </div>
                   <div>
                     <h4 className="font-bold text-[#3a302a] text-sm">{review.name}</h4>
-                    <div className="flex text-[#d65a47] text-xs mt-0.5 gap-0.5">
+                    <div className="flex text-gray-300 text-xs mt-0.5 gap-0.5">
+                      {/* Animated Stars inside the review card */}
                       {[...Array(5)].map((_, idx) => (
-                        <svg key={idx} className={`w-3.5 h-3.5 fill-current ${idx < review.rating ? 'text-[#d65a47]' : 'text-gray-300'}`} viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                        <svg key={idx} className={`w-3.5 h-3.5 fill-current ${idx < review.rating ? 'star-animate' : ''}`} style={{ animationDelay: `${0.3 + (idx * 0.15)}s` }} viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
                       ))}
                     </div>
                   </div>
@@ -540,14 +664,17 @@ export default function App() {
 
       {/* Footer */}
       <footer className="bg-[#ffd1bc] py-12 flex flex-col items-center text-center px-4 relative border-t border-black/10">
-         <div className="w-16 h-16 rounded-full border-2 border-white shadow-md mb-6 overflow-hidden bg-white hover:rotate-12 transition-transform duration-300 cursor-pointer flex items-center justify-center">
+         
+         {/* Footer Logo - Circle Frame */}
+         <div className="w-20 h-20 rounded-full border-2 border-white shadow-md mb-6 overflow-hidden bg-[#3a302a] hover:rotate-12 transition-transform duration-300 cursor-pointer flex items-center justify-center">
            <img 
               src={logoUrl} 
               alt="Paws & Tails" 
-              className="w-full h-full object-cover transform scale-[1.85] object-center"
+              className="w-full h-full object-cover object-center transform scale-[1.2]"
               onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=150&q=80' }}
             />
          </div>
+
          <div className="font-black text-2xl text-[#3a302a] mb-2">(201) 822-5535</div>
          <div className="text-sm font-bold text-white bg-[#3a302a] px-4 py-1 rounded-full mb-6 shadow-sm">Ridgefield Park, New Jersey</div>
          <p className="text-[#3a302a]/60 text-xs font-bold uppercase tracking-wider">Made with Love for Dogs</p>
@@ -611,6 +738,39 @@ function HeartIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+    </svg>
+  );
+}
+
+// New SVG Components for Day/Night Background
+function SunIcon({ className }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  );
+}
+
+function MoonIcon({ className }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+  );
+}
+
+function CloudIcon({ className }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.5 19C19.985 19 22 16.985 22 14.5C22 12.128 20.17 10.19 17.838 10.015C17.382 6.618 14.448 4 10.875 4C6.985 4 3.829 7.025 3.526 10.852C1.564 11.233 0 12.981 0 15C0 17.209 1.791 19 4 19H17.5Z"/>
+    </svg>
+  );
+}
+
+function StarIcon({ className }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
     </svg>
   );
 }
