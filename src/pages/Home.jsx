@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-// ONLY importing the icons we know 100% exist in your file to prevent crashes!
 import { HeartIcon, PawIcon } from '../components/Icons';
 
-// --- INLINE ICONS (To prevent "Export Not Found" crashes) ---
+// --- INLINE ICONS TO PREVENT CRASHES ---
 const SunIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>);
 const MoonIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>);
 const CloudIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>);
 const StarIcon = ({ className }) => (<svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>);
 const CheckCircleIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>);
 
-// --- SVGs for Google Reviews ---
 const GoogleStarIcon = () => (<svg className="w-5 h-5 text-[#fbbc04] fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>);
 const GoogleG = () => (
   <svg className="w-6 h-6" viewBox="0 0 24 24">
@@ -21,7 +19,6 @@ const GoogleG = () => (
   </svg>
 );
 
-// Comprehensive list of dog breeds
 const allBreeds = [
   "Affenpinscher", "Australian Cattle Dog", "Basset Hound", "Beagle", "Bichon Frise", "Border Collie", 
   "Border Terrier", "Boston Terrier", "Boykin Spaniel", "Brittany", "Brussels Griffon", "Bull Terrier", 
@@ -35,7 +32,6 @@ const allBreeds = [
 
 const ageOptions = ["Under 1 year", ...Array.from({ length: 20 }, (_, i) => i === 0 ? "1 year" : `${i + 1} years`)];
 const weightOptions = Array.from({ length: 50 }, (_, i) => i === 0 ? "1 lb" : `${i + 1} lbs`);
-const timeOptions = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
 
 export default function Home({ setIsAdminView, logoUrl }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -56,9 +52,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
     }, { threshold: 0.15 });
     
@@ -91,12 +85,12 @@ export default function Home({ setIsAdminView, logoUrl }) {
   ];
 
   const reviews = [
-    { name: "Amanda Torres", text: "Paws & Tails is amazing! My Goldendoodle Bailey loves it here. It is so hard to find a truly cage-free environment, and I have total peace of mind knowing she is sleeping on a real bed and not locked up.", rating: 5, initial: "A", color: "bg-purple-500", time: "2 weeks ago" },
-    { name: "Parwin Abassi", text: "Brownie is a timid Maltipoo, but he comes home so happy and exhausted. The fact that they cap the weight limit at 50 lbs makes me feel so much better leaving him. Highly recommend!", rating: 5, initial: "P", color: "bg-blue-500", time: "1 month ago" },
-    { name: "Michael Rossi", text: "Best day care in Ridgefield Park hands down. The facility is spotless, the scheduling is super easy, and Charlie literally pulls me to the front door when we drop him off. 5 stars.", rating: 5, initial: "M", color: "bg-green-500", time: "2 months ago" },
-    { name: "Allison M", text: "Mac loves going to Paws & Tails! He's always so excited when we pull up, and he comes back wonderfully exhausted from running around all day.", rating: 5, initial: "A", color: "bg-[#104b57]", time: "3 months ago" },
-    { name: "Lauren C", text: "Paws & Tails is amazing and I am so thankful I found someone I trust completely with my pup. 10/10 highly recommend to anyone in NJ looking for cage-free boarding.", rating: 5, initial: "L", color: "bg-[#d65a47]", time: "4 months ago" },
-    { name: "Joseph T", text: "I'm one of the neighbors and every time my family and I go on vacation they are the ones we trust. Fantastic environment and the updates we get are great.", rating: 5, initial: "J", color: "bg-[#3a302a]", time: "5 months ago" }
+    { name: "Amanda Torres", text: "Paws & Tails is amazing! My Goldendoodle Bailey loves it here. It is so hard to find a truly cage-free environment, and I have total peace of mind knowing she is sleeping on a real bed and not locked up.", rating: 5, initial: "A", color: "text-[#ffd1bc] bg-[#3a302a]", time: "2 weeks ago" },
+    { name: "Parwin Abassi", text: "Brownie is a timid Maltipoo, but he comes home so happy and exhausted. The fact that they cap the weight limit at 50 lbs makes me feel so much better leaving him. Highly recommend!", rating: 5, initial: "P", color: "text-[#d65a47] bg-[#fdf0e6]", time: "1 month ago" },
+    { name: "Michael Rossi", text: "Best day care in Ridgefield Park hands down. The facility is spotless, the scheduling is super easy, and Charlie literally pulls me to the front door when we drop him off. 5 stars.", rating: 5, initial: "M", color: "text-white bg-[#104b57]", time: "2 months ago" },
+    { name: "Allison M", text: "Mac loves going to Paws & Tails! He's always so excited when we pull up, and he comes back wonderfully exhausted from running around all day.", rating: 5, initial: "A", color: "text-[#104b57] bg-[#ffd1bc]", time: "3 months ago" },
+    { name: "Lauren C", text: "Paws & Tails is amazing and I am so thankful I found someone I trust completely with my pup. 10/10 highly recommend to anyone in NJ looking for cage-free boarding.", rating: 5, initial: "L", color: "text-white bg-[#d65a47]", time: "4 months ago" },
+    { name: "Joseph T", text: "I'm one of the neighbors and every time my family and I go on vacation they are the ones we trust. Fantastic environment and the updates we get are great.", rating: 5, initial: "J", color: "text-[#d65a47] bg-[#3a302a]", time: "5 months ago" }
   ];
 
   const faqs = [
@@ -217,7 +211,6 @@ export default function Home({ setIsAdminView, logoUrl }) {
           <div className="absolute inset-0 bg-[#ffd1bc]/10 mix-blend-multiply"></div>
         </div>
 
-        {/* --- MANY MORE HEARTS & PAWS IN HERO SECTION --- */}
         <div className="absolute top-20 left-10 text-[#ffd1bc] opacity-80 animate-float" style={{ animationDelay: '0s' }}><HeartIcon className="w-12 h-12" /></div>
         <div className="absolute top-32 right-32 text-[#d65a47] opacity-40 animate-float" style={{ animationDelay: '0.5s' }}><PawIcon className="w-14 h-14" /></div>
         <div className="absolute top-52 right-10 text-[#ffd1bc] opacity-70 animate-float" style={{ animationDelay: '1s' }}><HeartIcon className="w-16 h-16" /></div>
@@ -233,12 +226,11 @@ export default function Home({ setIsAdminView, logoUrl }) {
         <div className="absolute top-40 right-5 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '2s' }}><PawIcon className="w-9 h-9" /></div>
         <div className="absolute bottom-5 left-1/2 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '3.2s' }}><HeartIcon className="w-10 h-10" /></div>
         <div className="absolute top-30 left-1/6 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '1.5s' }}><PawIcon className="w-7 h-7" /></div>
-        {/* --- END HERO SECTION ICONS --- */}
         
         <div className="relative z-10 flex flex-col items-center w-full max-w-3xl text-center mt-6">
           <div className="flex flex-col items-center mb-6">
             <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white shadow-2xl mb-4 overflow-hidden bg-[#3a302a] flex items-center justify-center">
-              <img src={logoUrl} alt="Paws &amp; Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
+              <img src={logoUrl} alt="Paws & Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-[#3a302a] tracking-tight drop-shadow-sm font-serif">
               PAWS <span className="text-[#d65a47]">&amp;</span> TAILS
@@ -261,7 +253,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         </div>
       </section>
 
-      {/* ---------------- NEW LOVE STATEMENT SECTION (DARK BRAND BG) ---------------- */}
+      {/* Love Statement Section */}
       <section className="bg-[#3a302a] py-24 px-4 relative z-20 overflow-hidden shadow-2xl border-y-8 border-[#ffd1bc]">
         <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll slide-right">
           
@@ -279,7 +271,6 @@ export default function Home({ setIsAdminView, logoUrl }) {
             We do it more out of love than anything else!
           </p>
           
-          {/* Subtle floating icons within this dark love section */}
           <div className="absolute top-10 left-10 text-[#ffd1bc] opacity-20 animate-float" style={{ animationDelay: '0.2s' }}><HeartIcon className="w-8 h-8" /></div>
           <div className="absolute bottom-10 right-20 text-[#d65a47] opacity-30 animate-float" style={{ animationDelay: '0.7s' }}><PawIcon className="w-10 h-10 transform rotate-12" /></div>
           <div className="absolute top-1/2 left-1/4 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '1.2s' }}><HeartIcon className="w-6 h-6" /></div>
@@ -403,7 +394,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Breed</label>
                             <select required value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors">
                               <option value="">Select a breed...</option>
-                              {allBreeds.map(b => <option key={b} value={b}>{b}</option>)}
+                              {allBreeds.map((b, idx) => <option key={idx} value={b}>{b}</option>)}
                             </select>
                           </div>
 
@@ -411,7 +402,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Age</label>
                             <select required value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors">
                               <option value="">Select age...</option>
-                              {ageOptions.map(a => <option key={a} value={a}>{a}</option>)}
+                              {ageOptions.map((a, idx) => <option key={idx} value={a}>{a}</option>)}
                             </select>
                           </div>
 
@@ -419,7 +410,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Weight (Max 50 lbs)</label>
                             <select required value={formData.petWeight} onChange={(e) => setFormData({...formData, petWeight: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors">
                               <option value="">Select weight...</option>
-                              {weightOptions.map(w => <option key={w} value={w}>{w}</option>)}
+                              {weightOptions.map((w, idx) => <option key={idx} value={w}>{w}</option>)}
                             </select>
                           </div>
 
@@ -453,7 +444,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Time</label>
                             <select required value={meetTime} onChange={(e) => setMeetTime(e.target.value)} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors">
                               <option value="">Select a time...</option>
-                              {["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"].map(t => <option key={t} value={t}>{t}</option>)}
+                              {["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"].map((t, idx) => <option key={idx} value={t}>{t}</option>)}
                             </select>
                           </div>
                         </div>
