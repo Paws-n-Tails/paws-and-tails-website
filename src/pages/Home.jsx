@@ -19,7 +19,280 @@ const GoogleG = () => (
   </svg>
 );
 
-// Comprehensive list of dog breeds
+// --- SVGs for Quoting Tool ---
+const CalculatorIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+// --- Quoting Tool Component ---
+function QuotingTool() {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [numDogs, setNumDogs] = useState(1);
+  const [dropDate, setDropDate] = useState('');
+  const [dropTime, setDropTime] = useState('08:00'); 
+  const [pickDate, setPickDate] = useState('');
+  const [pickTime, setPickTime] = useState('17:00'); 
+  const [quote, setQuote] = useState(null);
+
+  useEffect(() => {
+    const calculateQuote = () => {
+      if (!dropDate || !dropTime || !pickDate || !pickTime) {
+        setQuote(null);
+        return;
+      }
+
+      const start = new Date(`${dropDate}T00:00:00`);
+      const end = new Date(`${pickDate}T00:00:00`);
+      const nights = Math.round((end - start) / (1000 * 60 * 60 * 24));
+
+      if (nights < 0) {
+        setQuote({ error: "Pick-up date cannot be before drop-off date." });
+        return;
+      }
+
+      const [dropH, dropM] = dropTime.split(':').map(Number);
+      const [pickH, pickM] = pickTime.split(':').map(Number);
+      const dropDecimal = dropH + dropM / 60;
+      const pickDecimal = pickH + pickM / 60;
+
+      if (nights === 0 && pickDecimal <= dropDecimal) {
+        setQuote({ error: "Pick-up time must be after drop-off time." });
+        return;
+      }
+
+      let dayCares = 0;
+      let overnights = nights;
+      let hourlyFees = 0;
+      let extraOvernights = 0;
+
+      // Base Day Care assignments
+      if (nights === 0) {
+        dayCares = 1; 
+      } else {
+        if (dropDecimal < 19) dayCares += 1;
+        if (pickDecimal > 7) dayCares += 1;
+      }
+
+      // Early Drop Off Logic (Before 7 AM)
+      const earlyHours = Math.max(0, 7 - dropDecimal);
+      if (earlyHours > 0) {
+        if (earlyHours <= 2) {
+          hourlyFees += Math.ceil(earlyHours) * 10;
+        } else {
+          extraOvernights += 1; 
+        }
+      }
+
+      // Late Pick Up Logic (After 7 PM)
+      const lateHours = Math.max(0, pickDecimal - 19);
+      if (lateHours > 0) {
+        if (lateHours <= 2) {
+          hourlyFees += Math.ceil(lateHours) * 10;
+        } else {
+          extraOvernights += 1; 
+        }
+      }
+
+      // Add penalty overnights to total
+      overnights += extraOvernights;
+
+      // Financials
+      const baseDayCareTotal = dayCares * 50;
+      const baseOvernightTotal = overnights * 80;
+      const baseSubtotal = baseDayCareTotal + baseOvernightTotal + hourlyFees;
+
+      // Multi-dog Logic: 1st dog full price, 2nd+ dog is half price
+      const dogMultiplier = 1 + (0.5 * (Math.max(1, numDogs) - 1));
+      const grandTotal = baseSubtotal * dogMultiplier;
+
+      setQuote({
+        dayCares,
+        overnights,
+        hourlyFees,
+        baseDayCareTotal,
+        baseOvernightTotal,
+        baseSubtotal,
+        dogMultiplier,
+        grandTotal,
+        error: null
+      });
+    };
+
+    calculateQuote();
+  }, [dropDate, dropTime, pickDate, pickTime, numDogs]);
+
+  if (!isExpanded) {
+    return (
+      <div className="w-full max-w-xl mx-auto my-12 relative z-30 px-4">
+        <button 
+          onClick={() => setIsExpanded(true)} 
+          className="w-full bg-[#d65a47] text-white rounded-full py-4 px-8 shadow-xl flex items-center justify-center gap-4 hover:bg-[#c44a38] transition-all transform hover:-translate-y-1"
+        >
+          <CalculatorIcon />
+          <span className="font-black text-xl font-serif">Open Price Estimator</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-4xl mx-auto bg-white rounded-[2rem] shadow-2xl border-4 border-[#ffd1bc] overflow-hidden mt-12 mb-8 relative z-30 transition-all duration-500 opacity-100 transform scale-100">
+      <div className="bg-[#3a302a] text-[#ffd1bc] p-6 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <CalculatorIcon />
+          <h3 className="text-2xl font-black font-serif tracking-wide">Instant Price Estimator</h3>
+        </div>
+        <button onClick={() => setIsExpanded(false)} className="text-[#ffd1bc] hover:text-white transition-colors p-2">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      
+      <div className="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="space-y-6">
+          
+          {/* Dog Counter */}
+          <div className="bg-[#fdf8f5] p-5 rounded-2xl border border-gray-100 shadow-inner flex justify-between items-center">
+            <h4 className="font-bold text-[#3a302a] uppercase tracking-wider text-sm flex items-center gap-2">
+              <PawIcon className="w-5 h-5 text-[#d65a47]"/> Number of Dogs
+            </h4>
+            <div className="flex items-center gap-4">
+               <button 
+                 onClick={() => setNumDogs(n => Math.max(1, n-1))} 
+                 disabled={numDogs <= 1}
+                 className={`w-8 h-8 rounded-full bg-white border border-gray-300 font-bold text-gray-600 flex items-center justify-center shadow-sm transition-opacity ${numDogs <= 1 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-gray-50'}`}
+               >-</button>
+               <span className="font-black text-2xl text-[#3a302a] w-4 text-center">{numDogs}</span>
+               <button 
+                 onClick={() => setNumDogs(n => Math.min(3, n+1))} 
+                 disabled={numDogs >= 3}
+                 className={`w-8 h-8 rounded-full bg-[#d65a47] text-white font-bold flex items-center justify-center shadow-sm transition-opacity ${numDogs >= 3 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-[#c44a38]'}`}
+               >+</button>
+            </div>
+          </div>
+
+          <div className="bg-[#fdf8f5] p-5 rounded-2xl border border-gray-100 shadow-inner">
+            <h4 className="font-bold text-[#d65a47] mb-3 uppercase tracking-wider text-sm flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#d65a47]"></span> Drop-Off
+            </h4>
+            <div className="grid grid-cols-2 gap-3">
+              <input 
+                type="date" 
+                value={dropDate} 
+                onChange={(e) => setDropDate(e.target.value)}
+                className="w-full border-2 border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#d65a47] text-gray-700 bg-white"
+              />
+              <input 
+                type="time" 
+                value={dropTime} 
+                onChange={(e) => setDropTime(e.target.value)}
+                className="w-full border-2 border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#d65a47] text-gray-700 bg-white"
+              />
+            </div>
+          </div>
+
+          <div className="bg-[#fdf8f5] p-5 rounded-2xl border border-gray-100 shadow-inner">
+            <h4 className="font-bold text-[#104b57] mb-3 uppercase tracking-wider text-sm flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#104b57]"></span> Pick-Up
+            </h4>
+            <div className="grid grid-cols-2 gap-3">
+              <input 
+                type="date" 
+                value={pickDate} 
+                onChange={(e) => setPickDate(e.target.value)}
+                className="w-full border-2 border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#104b57] text-gray-700 bg-white"
+              />
+              <input 
+                type="time" 
+                value={pickTime} 
+                onChange={(e) => setPickTime(e.target.value)}
+                className="w-full border-2 border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#104b57] text-gray-700 bg-white"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-center">
+          {quote && quote.error ? (
+            <div className="bg-red-50 text-red-500 p-4 rounded-xl text-center font-bold border-2 border-red-200">
+              {quote.error}
+            </div>
+          ) : quote ? (
+            <div className="bg-[#104b57] text-white p-8 rounded-3xl shadow-lg relative overflow-hidden h-full flex flex-col border border-[#0c3942]">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#ffd1bc] opacity-5 rounded-full transform translate-x-10 -translate-y-10"></div>
+              
+              <h4 className="text-[#ffd1bc] font-bold text-sm uppercase tracking-widest mb-6">Estimated Cost</h4>
+              
+              <div className="space-y-4 mb-6 flex-1">
+                <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <CheckIcon />
+                    <span className="font-medium text-gray-200">{quote.dayCares}x Day Cares (@ $50)</span>
+                  </div>
+                  <span className="font-bold text-lg text-white">${quote.baseDayCareTotal}</span>
+                </div>
+                
+                <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                  <div className="flex items-center gap-2">
+                    <CheckIcon />
+                    <span className="font-medium text-gray-200">{quote.overnights}x Overnights (@ $80)</span>
+                  </div>
+                  <span className="font-bold text-lg text-white">${quote.baseOvernightTotal}</span>
+                </div>
+
+                {quote.hourlyFees > 0 && (
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <div className="flex items-center gap-2">
+                      <CheckIcon />
+                      <span className="font-medium text-[#ffd1bc]">Early/Late Fees</span>
+                    </div>
+                    <span className="font-bold text-lg text-white">${quote.hourlyFees}</span>
+                  </div>
+                )}
+
+                {numDogs > 1 && (
+                  <div className="pt-2">
+                     <div className="flex justify-between items-center text-sm text-gray-300 mb-2 font-medium">
+                        <span>Subtotal (1 Dog)</span>
+                        <span>${quote.baseSubtotal}</span>
+                     </div>
+                     <div className="flex justify-between items-center text-sm text-[#ffd1bc] mb-2 font-medium">
+                        <span>Additional Dogs ({numDogs - 1} @ 50% Off)</span>
+                        <span>+ ${(quote.baseSubtotal * (numDogs - 1) * 0.5).toFixed(2)}</span>
+                     </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-between items-end mt-4 pt-4 border-t-2 border-[#0c3942]">
+                <span className="text-gray-300 font-bold uppercase text-sm tracking-widest mb-2">Grand Total</span>
+                <span className="text-5xl font-black text-[#ffd1bc] drop-shadow-sm">${quote.grandTotal.toFixed(2).replace('.00', '')}</span>
+              </div>
+              
+              <p className="text-xs text-center text-gray-400 mt-6 italic">
+                *Quotes are estimates. Fees auto-apply for drop-offs before 7 AM and pick-ups after 7 PM.
+              </p>
+            </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-3xl p-8 text-center bg-gray-50">
+              <CalculatorIcon className="w-12 h-12 mb-3 opacity-50" />
+              <p className="font-medium">Enter your dates and times on the left to see an instant estimate!</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Comprehensive list of dog breeds ---
 const allBreeds = [
   "Affenpinscher", "Australian Cattle Dog", "Basset Hound", "Beagle", "Bichon Frise", "Border Collie", 
   "Border Terrier", "Boston Terrier", "Boykin Spaniel", "Brittany", "Brussels Griffon", "Bull Terrier", 
@@ -90,7 +363,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
 
   const reviews = [
     { name: "Amanda Torres", text: "Paws & Tails is amazing! My Goldendoodle Bailey loves it here. It is so hard to find a truly cage-free environment, and I have total peace of mind knowing she is sleeping on a real bed and not locked up.", rating: 5, initial: "A", color: "bg-purple-500", time: "2 weeks ago" },
-    { name: "Parwin Abassi", text: "Brownie is a timid Maltipoo, but he comes home so happy and exhausted. The fact that they cap the weight limit at 50 lbs makes me feel so much better leaving him. Highly recommend!", rating: 5, initial: "P", color: "bg-blue-500", time: "1 month ago" },
+    { name: "David Chen", text: "Since moving to Ridgefield Park, finding a reliable sitter was stressful until we found Paws & Tails. Luna is always thrilled to see them, and the photo updates make my day at work so much easier!", rating: 5, initial: "D", color: "bg-yellow-500", time: "1 month ago" },
     { name: "Michael Rossi", text: "Best day care in Ridgefield Park hands down. The facility is spotless, the scheduling is super easy, and Charlie literally pulls me to the front door when we drop him off. 5 stars.", rating: 5, initial: "M", color: "bg-green-500", time: "2 months ago" },
     { name: "Allison M", text: "Mac loves going to Paws & Tails! He's always so excited when we pull up, and he comes back wonderfully exhausted from running around all day.", rating: 5, initial: "A", color: "bg-[#104b57]", time: "3 months ago" },
     { name: "Lauren C", text: "Paws & Tails is amazing and I am so thankful I found someone I trust completely with my pup. 10/10 highly recommend to anyone in NJ looking for cage-free boarding.", rating: 5, initial: "L", color: "bg-[#d65a47]", time: "4 months ago" },
@@ -290,7 +563,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
       </section>
 
       {/* Services Section */}
-      <section className="bg-gradient-to-b md:bg-gradient-to-r from-[#ffd1bc] via-[#a3b1c6] to-[#104b57] py-24 px-4 relative overflow-hidden">
+      <section className="bg-gradient-to-b md:bg-gradient-to-r from-[#ffd1bc] via-[#a3b1c6] to-[#104b57] pt-24 pb-12 px-4 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -mt-1 flex text-white z-20">
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-12 fill-current">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
@@ -326,6 +599,10 @@ export default function Home({ setIsAdminView, logoUrl }) {
             <div className="text-4xl font-black text-[#ffd1bc] mt-auto drop-shadow-sm">$80<span className="text-xl text-[#608d96] font-medium ml-1">/night</span></div>
           </div>
         </div>
+
+        {/* 🌟 Quoting Tool Component 🌟 */}
+        <QuotingTool />
+
       </section>
 
       {/* Main Form Section */}
