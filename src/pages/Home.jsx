@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { HeartIcon, PawIcon } from '../components/Icons';
+import { HeartIcon, PawIcon, SunIcon, MoonIcon, CloudIcon, StarIcon, CheckCircleIcon } from '../components/Icons';
 
-// --- INLINE ICONS TO PREVENT CRASHES ---
-const SunIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>);
-const MoonIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>);
-const CloudIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>);
-const StarIcon = ({ className }) => (<svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>);
-const CheckCircleIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>);
+// --- SVGs for Google Reviews ---
+const GoogleStarIcon = () => (
+  <svg className="w-5 h-5 text-[#fbbc04] fill-current" viewBox="0 0 24 24">
+    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+  </svg>
+);
 
-const GoogleStarIcon = () => (<svg className="w-5 h-5 text-[#fbbc04] fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>);
 const GoogleG = () => (
   <svg className="w-6 h-6" viewBox="0 0 24 24">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -19,6 +18,7 @@ const GoogleG = () => (
   </svg>
 );
 
+// Comprehensive list of dog breeds
 const allBreeds = [
   "Affenpinscher", "Australian Cattle Dog", "Basset Hound", "Beagle", "Bichon Frise", "Border Collie", 
   "Border Terrier", "Boston Terrier", "Boykin Spaniel", "Brittany", "Brussels Griffon", "Bull Terrier", 
@@ -32,6 +32,7 @@ const allBreeds = [
 
 const ageOptions = ["Under 1 year", ...Array.from({ length: 20 }, (_, i) => i === 0 ? "1 year" : `${i + 1} years`)];
 const weightOptions = Array.from({ length: 50 }, (_, i) => i === 0 ? "1 lb" : `${i + 1} lbs`);
+const timeOptions = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
 
 export default function Home({ setIsAdminView, logoUrl }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -52,7 +53,9 @@ export default function Home({ setIsAdminView, logoUrl }) {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
       });
     }, { threshold: 0.15 });
     
@@ -85,12 +88,12 @@ export default function Home({ setIsAdminView, logoUrl }) {
   ];
 
   const reviews = [
-    { name: "Amanda Torres", text: "Paws & Tails is amazing! My Goldendoodle Bailey loves it here. It is so hard to find a truly cage-free environment, and I have total peace of mind knowing she is sleeping on a real bed and not locked up.", rating: 5, initial: "A", color: "text-[#ffd1bc] bg-[#3a302a]", time: "2 weeks ago" },
-    { name: "Parwin Abassi", text: "Brownie is a timid Maltipoo, but he comes home so happy and exhausted. The fact that they cap the weight limit at 50 lbs makes me feel so much better leaving him. Highly recommend!", rating: 5, initial: "P", color: "text-[#d65a47] bg-[#fdf0e6]", time: "1 month ago" },
-    { name: "Michael Rossi", text: "Best day care in Ridgefield Park hands down. The facility is spotless, the scheduling is super easy, and Charlie literally pulls me to the front door when we drop him off. 5 stars.", rating: 5, initial: "M", color: "text-white bg-[#104b57]", time: "2 months ago" },
-    { name: "Allison M", text: "Mac loves going to Paws & Tails! He's always so excited when we pull up, and he comes back wonderfully exhausted from running around all day.", rating: 5, initial: "A", color: "text-[#104b57] bg-[#ffd1bc]", time: "3 months ago" },
-    { name: "Lauren C", text: "Paws & Tails is amazing and I am so thankful I found someone I trust completely with my pup. 10/10 highly recommend to anyone in NJ looking for cage-free boarding.", rating: 5, initial: "L", color: "text-white bg-[#d65a47]", time: "4 months ago" },
-    { name: "Joseph T", text: "I'm one of the neighbors and every time my family and I go on vacation they are the ones we trust. Fantastic environment and the updates we get are great.", rating: 5, initial: "J", color: "text-[#d65a47] bg-[#3a302a]", time: "5 months ago" }
+    { name: "Amanda Torres", text: "Paws & Tails is amazing! My Goldendoodle Bailey loves it here. It is so hard to find a truly cage-free environment, and I have total peace of mind knowing she is sleeping on a real bed and not locked up.", rating: 5, initial: "A", color: "bg-purple-500", time: "2 weeks ago" },
+    { name: "Parwin Abassi", text: "Brownie is a timid Maltipoo, but he comes home so happy and exhausted. The fact that they cap the weight limit at 50 lbs makes me feel so much better leaving him. Highly recommend!", rating: 5, initial: "P", color: "bg-blue-500", time: "1 month ago" },
+    { name: "Michael Rossi", text: "Best day care in Ridgefield Park hands down. The facility is spotless, the scheduling is super easy, and Charlie literally pulls me to the front door when we drop him off. 5 stars.", rating: 5, initial: "M", color: "bg-green-500", time: "2 months ago" },
+    { name: "Allison M", text: "Mac loves going to Paws & Tails! He's always so excited when we pull up, and he comes back wonderfully exhausted from running around all day.", rating: 5, initial: "A", color: "bg-[#104b57]", time: "3 months ago" },
+    { name: "Lauren C", text: "Paws & Tails is amazing and I am so thankful I found someone I trust completely with my pup. 10/10 highly recommend to anyone in NJ looking for cage-free boarding.", rating: 5, initial: "L", color: "bg-[#d65a47]", time: "4 months ago" },
+    { name: "Joseph T", text: "I'm one of the neighbors and every time my family and I go on vacation they are the ones we trust. Fantastic environment and the updates we get are great.", rating: 5, initial: "J", color: "bg-[#3a302a]", time: "5 months ago" }
   ];
 
   const faqs = [
@@ -230,13 +233,13 @@ export default function Home({ setIsAdminView, logoUrl }) {
         <div className="relative z-10 flex flex-col items-center w-full max-w-3xl text-center mt-6">
           <div className="flex flex-col items-center mb-6">
             <div className="w-32 h-32 md:w-36 md:h-36 rounded-full border-4 border-white shadow-2xl mb-4 overflow-hidden bg-[#3a302a] flex items-center justify-center">
-              <img src={logoUrl} alt="Paws & Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
+              <img src={logoUrl} alt="Paws and Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-[#3a302a] tracking-tight drop-shadow-sm font-serif">
-              PAWS <span className="text-[#d65a47]">&amp;</span> TAILS
+              PAWS <span className="text-[#d65a47]">{'&'}</span> TAILS
             </h1>
             <span className="bg-[#3a302a] text-[#ffd1bc] font-bold px-6 py-2 rounded-full mt-3 shadow-md uppercase tracking-wider text-sm border border-[#2d1b13]">
-              Your Pet&apos;s Home Away From Home
+              Your Pet{"'"}s Home Away From Home
             </span>
           </div>
 
@@ -247,7 +250,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
           </div>
 
           <button onClick={openForm} className="mt-10 bg-[#104b57] hover:bg-[#0c3942] text-white px-10 py-4 rounded-full font-black text-xl transition-all flex items-center justify-center gap-3 shadow-xl hover:-translate-y-1 w-full max-w-sm animate-bounce" style={{ animationDuration: '2.5s' }}>
-            Schedule Meet &amp; Greet!
+            Schedule Meet {'&'} Greet!
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </button>
         </div>
@@ -264,7 +267,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
           </div>
 
           <h2 className="text-3xl md:text-5xl font-black text-white font-serif leading-tight mb-8">
-            At Paws &amp; Tails, we don&apos;t feel the need to charge a premium for something we absolutely <span className="text-[#d65a47]">love</span> doing.
+            At Paws {'&'} Tails, we don{"'"}t feel the need to charge a premium for something we absolutely <span className="text-[#d65a47]">love</span> doing.
           </h2>
           
           <p className="text-2xl md:text-4xl text-[#ffd1bc] font-black font-serif italic">
@@ -292,9 +295,9 @@ export default function Home({ setIsAdminView, logoUrl }) {
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
             </svg>
         </div>
-        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block"><SunIcon className="w-32 h-32" /></div>
+        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block"><SunIcon className="w-32 h-32 text-white/40" /></div>
         <div className="absolute top-40 left-1/4 text-white/60 animate-float delay-1000 z-10 hidden md:block"><CloudIcon className="w-20 h-20" /></div>
-        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24" /></div>
+        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24 text-white/50" /></div>
         <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10"><StarIcon className="w-10 h-10" /></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12 animate-on-scroll slide-left">
@@ -310,15 +313,15 @@ export default function Home({ setIsAdminView, logoUrl }) {
             <div className="p-4 bg-[#d65a47]/10 rounded-full mb-6"><SunIcon className="w-12 h-12 text-[#d65a47]" /></div>
             <h3 className="text-3xl font-black text-[#3a302a] mb-3 font-serif">Day Care</h3>
             <span className="bg-[#d65a47]/10 text-[#d65a47] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block">7am to 7pm</span>
-            <p className="text-gray-600 leading-relaxed mb-8 font-medium">Your pup&apos;s home away from home! We offer our fun and playful pet day care service from 7am to 7pm.</p>
+            <p className="text-gray-600 leading-relaxed mb-8 font-medium">Your pup{"'"}s home away from home! We offer our fun and playful pet day care service from 7am to 7pm.</p>
             <div className="text-4xl font-black text-[#d65a47] mt-auto drop-shadow-sm">$50<span className="text-xl text-gray-400">/day</span></div>
           </div>
 
           <div className="bg-[#0b2931]/95 backdrop-blur-sm rounded-[3rem] p-10 shadow-xl border-4 border-[#104b57] transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center">
             <div className="p-4 bg-[#104b57] rounded-full mb-6"><MoonIcon className="w-12 h-12 text-[#ffd1bc]" /></div>
             <h3 className="text-3xl font-black text-white mb-3 font-serif">Over Night</h3>
-            <span className="bg-[#104b57] text-[#ffd1bc] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block shadow-inner">Full Day &amp; Night</span>
-            <p className="text-gray-300 leading-relaxed mb-8 font-medium">Your pet&apos;s cozy overnight retreat! They can choose between their bed or ours, ensuring a restful night&apos;s sleep.</p>
+            <span className="bg-[#104b57] text-[#ffd1bc] font-bold px-4 py-1.5 rounded-full text-sm mb-6 inline-block shadow-inner">Full Day {'&'} Night</span>
+            <p className="text-gray-300 leading-relaxed mb-8 font-medium">Your pet{"'"}s cozy overnight retreat! They can choose between their bed or ours, ensuring a restful night{"'"}s sleep.</p>
             <div className="text-4xl font-black text-[#ffd1bc] mt-auto drop-shadow-sm">$80<span className="text-xl text-[#608d96] font-medium ml-1">/night</span></div>
           </div>
         </div>
@@ -337,7 +340,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#104b57] via-[#104b57]/40 to-transparent"></div>
               <div className="absolute bottom-8 left-8 right-8 text-white z-10">
-                <h3 className="text-3xl lg:text-4xl font-black font-serif mb-2 leading-tight">We can&apos;t wait to meet your best friend!</h3>
+                <h3 className="text-3xl lg:text-4xl font-black font-serif mb-2 leading-tight">We can{"'"}t wait to meet your best friend!</h3>
                 <p className="text-[#ffd1bc] font-bold text-lg">Schedule a quick 15-minute intro at our home.</p>
               </div>
             </div>
@@ -355,13 +358,13 @@ export default function Home({ setIsAdminView, logoUrl }) {
                   <p className="text-gray-600 text-lg font-medium leading-relaxed mb-8">
                     We have received your request. All appointments must be manually approved by our team before being confirmed. We will contact you shortly to finalize!
                   </p>
-                  <button onClick={() => setShowForm(false)} className="bg-[#104b57] text-white font-black px-10 py-4 rounded-xl hover:bg-[#0c3942] transition-colors shadow-lg">Close &amp; Return</button>
+                  <button onClick={() => setShowForm(false)} className="bg-[#104b57] text-white font-black px-10 py-4 rounded-xl hover:bg-[#0c3942] transition-colors shadow-lg">Close {'&'} Return</button>
                 </div>
               ) : (
                 <div className="relative z-10">
                   <div className="mb-10">
-                    <h2 className="text-3xl md:text-4xl font-black text-[#3a302a] font-serif mb-3 flex items-center gap-3">Let&apos;s Get Started! <PawIcon className="w-8 h-8 text-[#d65a47]" /></h2>
-                    <p className="text-gray-500 font-medium text-lg">Just three quick steps to schedule your meet &amp; greet.</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-[#3a302a] font-serif mb-3 flex items-center gap-3">Let{"'"}s Get Started! <PawIcon className="w-8 h-8 text-[#d65a47]" /></h2>
+                    <p className="text-gray-500 font-medium text-lg">Just three quick steps to schedule your meet {'&'} greet.</p>
                   </div>
                   
                   <form onSubmit={handleFormSubmit}>
@@ -374,7 +377,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                     {formStep === 1 && (
                       <div className="space-y-5 p-2">
                         <h3 className="font-black text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/10 pb-4">1. Human Details</h3>
-                        <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Owner&apos;s Name</label><input type="text" required value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
+                        <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Owner{"'"}s Name</label><input type="text" required value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Email</label><input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Phone</label><input type="tel" required value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors" /></div>
                       </div>
@@ -386,7 +389,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                           <div className="md:col-span-2">
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Pet&apos;s Name</label>
+                            <label className="block text-sm font-bold text-gray-700 mb-1">Pet{"'"}s Name</label>
                             <input type="text" required value={formData.petName} onChange={(e) => setFormData({...formData, petName: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors" />
                           </div>
                           
@@ -394,7 +397,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Breed</label>
                             <select required value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors">
                               <option value="">Select a breed...</option>
-                              {allBreeds.map((b, idx) => <option key={idx} value={b}>{b}</option>)}
+                              {allBreeds.map((b, idx) => <option key={`breed-${idx}`} value={b}>{b}</option>)}
                             </select>
                           </div>
 
@@ -402,7 +405,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Age</label>
                             <select required value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors">
                               <option value="">Select age...</option>
-                              {ageOptions.map((a, idx) => <option key={idx} value={a}>{a}</option>)}
+                              {ageOptions.map((a, idx) => <option key={`age-${idx}`} value={a}>{a}</option>)}
                             </select>
                           </div>
 
@@ -410,7 +413,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Weight (Max 50 lbs)</label>
                             <select required value={formData.petWeight} onChange={(e) => setFormData({...formData, petWeight: e.target.value})} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] focus:bg-white transition-colors">
                               <option value="">Select weight...</option>
-                              {weightOptions.map((w, idx) => <option key={idx} value={w}>{w}</option>)}
+                              {weightOptions.map((w, idx) => <option key={`weight-${idx}`} value={w}>{w}</option>)}
                             </select>
                           </div>
 
@@ -429,14 +432,14 @@ export default function Home({ setIsAdminView, logoUrl }) {
 
                     {formStep === 3 && (
                       <div className="space-y-5 p-2">
-                        <h3 className="font-bold text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/10 pb-4">3. Meet &amp; Greet</h3>
+                        <h3 className="font-bold text-2xl text-[#104b57] mb-6 border-b-2 border-[#104b57]/10 pb-4">3. Meet {'&'} Greet</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <label className="block text-sm font-bold text-gray-700 mb-1">Date</label>
                             <select required value={meetDate} onChange={(e) => setMeetDate(e.target.value)} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors">
                               <option value="">Select a weekend...</option>
                               {availableWeekends.map((date, idx) => (
-                                <option key={idx} value={`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`}>{date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</option>
+                                <option key={`date-${idx}`} value={`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`}>{date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</option>
                               ))}
                             </select>
                           </div>
@@ -444,7 +447,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
                             <label className="block text-sm font-bold text-gray-700 mb-1">Time</label>
                             <select required value={meetTime} onChange={(e) => setMeetTime(e.target.value)} className="w-full border-2 border-gray-200 bg-gray-50 rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] focus:bg-white transition-colors">
                               <option value="">Select a time...</option>
-                              {["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"].map((t, idx) => <option key={idx} value={t}>{t}</option>)}
+                              {timeOptions.map((t, idx) => <option key={`time-${idx}`} value={t}>{t}</option>)}
                             </select>
                           </div>
                         </div>
@@ -491,7 +494,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
               "Valid for the full month (up to 30 days)",
               "Priority booking guarantee"
             ].map((item, i) => (
-              <li key={i} className="flex items-center gap-4">
+              <li key={`benefit-${i}`} className="flex items-center gap-4">
                 <CheckCircleIcon className="w-7 h-7 text-[#d65a47] flex-shrink-0" />
                 <span className="text-[#3a302a] font-bold text-base md:text-lg">{item}</span>
               </li>
@@ -513,7 +516,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
           </div>
           <div className="grid grid-cols-3 gap-1 md:gap-3">
             {galleryImages.map((imgUrl, idx) => (
-              <a key={idx} href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="aspect-square bg-gray-100 overflow-hidden group">
+              <a key={`insta-${idx}`} href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="aspect-square bg-gray-100 overflow-hidden group">
                 <img src={imgUrl} alt="Instagram Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               </a>
             ))}
@@ -538,14 +541,14 @@ export default function Home({ setIsAdminView, logoUrl }) {
               <GoogleG />
             </div>
             <div className="flex gap-1.5">
-              {[...Array(5)].map((_, i) => <GoogleStarIcon key={i} />)}
+              {[...Array(5)].map((_, i) => <GoogleStarIcon key={`star-top-${i}`} />)}
             </div>
           </div>
 
           {/* Reviews Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((review, i) => (
-              <div key={i} className={`animate-on-scroll ${i % 2 === 0 ? 'slide-left' : 'slide-right'} bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow`}>
+              <div key={`review-${i}`} className={`animate-on-scroll ${i % 2 === 0 ? 'slide-left' : 'slide-right'} bg-white p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow`}>
                 <div className="flex items-center gap-4 mb-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold ${review.color}`}>{review.initial}</div>
                   <div>
@@ -558,9 +561,9 @@ export default function Home({ setIsAdminView, logoUrl }) {
                   </div>
                 </div>
                 <div className="flex gap-0.5 mb-3">
-                  {[...Array(5)].map((_, i) => <GoogleStarIcon key={i} />)}
+                  {[...Array(5)].map((_, j) => <GoogleStarIcon key={`star-${i}-${j}`} />)}
                 </div>
-                <p className="text-gray-600 text-sm font-medium leading-relaxed">&quot;{review.text}&quot;</p>
+                <p className="text-gray-600 text-sm font-medium leading-relaxed">{'"'}{review.text}{'"'}</p>
               </div>
             ))}
           </div>
@@ -571,7 +574,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
       <section className="bg-[#ffd1bc] py-20 px-4">
         <div className="max-w-3xl mx-auto space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden animate-on-scroll slide-left" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={`faq-${index}`} className="bg-white rounded-2xl shadow-sm border border-black/5 overflow-hidden animate-on-scroll slide-left" style={{ animationDelay: `${index * 0.1}s` }}>
                 <button onClick={() => setOpenFaq(openFaq === index ? null : index)} className="w-full px-6 py-5 text-left font-bold text-[#3a302a] flex justify-between items-center">
                   {faq.q}
                   <svg className={`w-5 h-5 transform transition-transform ${openFaq === index ? 'rotate-180 text-[#d65a47]' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -607,7 +610,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
             </div>
             <div className="flex-1 p-4 overflow-y-auto bg-[#fdf8f5] flex flex-col gap-3">
               {chatMessages.map((msg, i) => (
-                <div key={i} className={`p-3 rounded-2xl text-sm font-medium ${msg.sender === 'ai' ? 'bg-white text-gray-700 shadow-sm border border-gray-100' : 'bg-[#d65a47] text-white self-end shadow-sm'}`}>{msg.text}</div>
+                <div key={`msg-${i}`} className={`p-3 rounded-2xl text-sm font-medium ${msg.sender === 'ai' ? 'bg-white text-gray-700 shadow-sm border border-gray-100' : 'bg-[#d65a47] text-white self-end shadow-sm'}`}>{msg.text}</div>
               ))}
             </div>
             <form onSubmit={handleChatSubmit} className="p-3 bg-white border-t border-gray-100 flex gap-2">
