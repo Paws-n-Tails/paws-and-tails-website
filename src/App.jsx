@@ -11,7 +11,9 @@ export default function App() {
   
   // Auth States
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false); // NEW: Admin Auth State
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginType, setLoginType] = useState('client'); // 'client' or 'admin'
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
@@ -20,11 +22,23 @@ export default function App() {
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  
+  // Form Input States
+  const [formData, setFormData] = useState({ ownerName: '', email: '', phone: '', petName: '', breed: '', age: '', info: ''});
 
   // Validation States for Interview
   const [meetDate, setMeetDate] = useState('');
   const [meetTime, setMeetTime] = useState('');
   const [availableWeekends, setAvailableWeekends] = useState([]);
+
+  // ==========================================
+  // MOCK DATABASE FOR ADMIN DASHBOARD
+  // ==========================================
+  const [leads, setLeads] = useState([
+    { id: 1, ownerName: "Sarah Jenkins", email: "sarah@example.com", phone: "(555) 123-4567", petName: "Buster", breed: "Golden Retriever", age: "2 years", date: "2026-05-02", time: "10:00 AM", status: "pending", createdAt: "Just now" },
+    { id: 2, ownerName: "Mike Ross", email: "mike@example.com", phone: "(555) 987-6543", petName: "Harvey", breed: "Beagle", age: "4 years", date: "2026-05-03", time: "1:30 PM", status: "approved", createdAt: "2 hours ago" },
+    { id: 3, ownerName: "Emily Clark", email: "emily@example.com", phone: "(555) 555-5555", petName: "Luna", breed: "French Bulldog", age: "1 year", date: "2026-05-09", time: "11:00 AM", status: "pending", createdAt: "1 day ago" },
+  ]);
   
   const logoUrl = "https://ngjloklpwtdzfeezrvru.supabase.co/storage/v1/object/public/images/admin-generations/unassigned-exterior-4:3-standard-1777350618285.jpg";
 
@@ -56,6 +70,7 @@ export default function App() {
     return () => elements.forEach(el => observer.unobserve(el));
   }, []);
 
+  // Content Data
   const galleryImages = [
     "https://ngjloklpwtdzfeezrvru.supabase.co/storage/v1/object/public/images/admin-generations/unassigned-exterior-4:3-standard-1777337510645.jpg",
     "https://ngjloklpwtdzfeezrvru.supabase.co/storage/v1/object/public/images/admin-generations/unassigned-exterior-4:3-standard-1777337560083.jpg",
@@ -96,13 +111,17 @@ export default function App() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // In a real app, this would authenticate with Supabase Auth
-    setIsLoggedIn(true);
+    if (loginType === 'admin') {
+      setIsAdminLoggedIn(true);
+    } else {
+      setIsLoggedIn(true);
+    }
     setShowLoginModal(false);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setIsAdminLoggedIn(false);
     setShowForm(false);
   };
 
@@ -110,34 +129,24 @@ export default function App() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    /* =========================================
-      SUPABASE INTEGRATION READY
-      =========================================
-      Replace the setTimeout below with your Supabase insert code:
-      
-      const { data, error } = await supabase
-        .from('leads')
-        .insert([
-          { 
-            owner_name: formData.name, 
-            email: formData.email, 
-            phone: formData.phone,
-            pet_name: formData.petName,
-            status: 'pending_interview',
-            interview_date: meetDate,
-            interview_time: meetTime
-          }
-        ]);
-        
-      if (!error) {
-         setIsSubmitting(false);
-         setSubmitSuccess(true);
-      }
-      =========================================
-    */
+    // Create a new mock lead to push into the Admin Dashboard
+    const newLead = {
+      id: Date.now(),
+      ownerName: formData.ownerName || "New Client",
+      email: formData.email,
+      phone: formData.phone,
+      petName: formData.petName || "Doggo",
+      breed: formData.breed,
+      age: formData.age,
+      date: meetDate,
+      time: meetTime,
+      status: "pending",
+      createdAt: "Just now"
+    };
 
     // Simulating database network request for demo
     setTimeout(() => {
+      setLeads([newLead, ...leads]); // Add to top of admin list
       setIsSubmitting(false);
       setSubmitSuccess(true);
     }, 1500);
@@ -146,7 +155,6 @@ export default function App() {
   const submitBookingToSupabase = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Supabase insert for 'appointments' table goes here
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitSuccess(true);
@@ -163,6 +171,153 @@ export default function App() {
     setTimeout(() => document.getElementById('main-form-section')?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
+  const openLoginModal = (type) => {
+    setLoginType(type);
+    setShowLoginModal(true);
+  }
+
+  const updateLeadStatus = (id, newStatus) => {
+    setLeads(leads.map(lead => lead.id === id ? { ...lead, status: newStatus } : lead));
+  };
+
+
+  // ==========================================
+  // ADMIN DASHBOARD VIEW
+  // ==========================================
+  if (isAdminLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex font-sans">
+        {/* Admin Sidebar */}
+        <div className="w-64 bg-[#104b57] text-white flex flex-col shadow-2xl z-20">
+          <div className="p-6 flex flex-col items-center border-b border-white/10">
+            <div className="w-20 h-20 rounded-full border-2 border-[#ffd1bc] overflow-hidden bg-white mb-3">
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-cover transform scale-[1.2]" />
+            </div>
+            <h2 className="font-black font-serif text-xl tracking-wider">ADMIN PORTAL</h2>
+          </div>
+          
+          <nav className="flex-1 py-6">
+            <ul className="space-y-2">
+              <li>
+                <a href="#" className="flex items-center gap-3 px-6 py-3 bg-white/10 text-[#ffd1bc] font-bold border-r-4 border-[#d65a47]">
+                  <PawIcon className="w-5 h-5" /> Meet & Greets
+                </a>
+              </li>
+              <li>
+                <a href="#" className="flex items-center gap-3 px-6 py-3 text-white/70 hover:text-white hover:bg-white/5 font-medium transition-colors">
+                  <CalendarIcon className="w-5 h-5" /> Active Bookings
+                </a>
+              </li>
+              <li>
+                <a href="#" className="flex items-center gap-3 px-6 py-3 text-white/70 hover:text-white hover:bg-white/5 font-medium transition-colors">
+                  <UserIcon className="w-5 h-5" /> Client Database
+                </a>
+              </li>
+            </ul>
+          </nav>
+          
+          <div className="p-6 border-t border-white/10">
+            <button onClick={handleLogout} className="flex items-center gap-2 text-sm text-white/70 hover:text-[#d65a47] font-bold transition-colors w-full">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        {/* Admin Main Content */}
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+          {/* Admin Header */}
+          <header className="bg-white shadow-sm py-4 px-8 flex justify-between items-center z-10">
+            <div>
+              <h1 className="text-2xl font-black text-[#3a302a] font-serif">Scheduled Meet & Greets</h1>
+              <p className="text-sm text-gray-500 font-medium">Review and approve new client applications.</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="bg-[#fdf8f5] px-4 py-2 rounded-full text-sm font-bold text-[#d65a47] flex items-center gap-2 border border-[#ffd1bc]">
+                <span className="w-2 h-2 rounded-full bg-[#d65a47] animate-pulse"></span>
+                {leads.filter(l => l.status === 'pending').length} Pending
+              </div>
+            </div>
+          </header>
+
+          {/* Admin Table Area */}
+          <main className="flex-1 overflow-y-auto p-8 bg-gray-50">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-bold">
+                    <th className="p-4">Client & Pet</th>
+                    <th className="p-4">Contact Info</th>
+                    <th className="p-4">Requested Slot</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {leads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="p-4">
+                        <div className="font-bold text-[#3a302a] text-base">{lead.ownerName}</div>
+                        <div className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
+                          <PawIcon className="w-3 h-3 text-[#d65a47]" /> {lead.petName} ({lead.breed})
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="text-sm text-gray-800">{lead.email}</div>
+                        <div className="text-sm text-gray-500">{lead.phone}</div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-bold text-[#104b57]">{new Date(lead.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric'})}</div>
+                        <div className="text-sm text-gray-500">{lead.time}</div>
+                      </td>
+                      <td className="p-4">
+                        {lead.status === 'pending' ? (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                            Pending Approval
+                          </span>
+                        ) : lead.status === 'approved' ? (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                            Approved
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                            Rejected
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4 text-right">
+                        {lead.status === 'pending' && (
+                          <div className="flex justify-end gap-2">
+                            <button onClick={() => updateLeadStatus(lead.id, 'approved')} className="p-2 bg-green-50 text-green-600 hover:bg-green-100 rounded-lg transition-colors" title="Approve">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                            </button>
+                            <button onClick={() => updateLeadStatus(lead.id, 'rejected')} className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors" title="Reject">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                          </div>
+                        )}
+                        {lead.status === 'approved' && (
+                          <button className="text-sm font-bold text-[#104b57] hover:underline">View Client</button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {leads.length === 0 && (
+                     <tr><td colSpan="5" className="p-8 text-center text-gray-500 font-medium">No leads found in the database.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+
+  // ==========================================
+  // MAIN PUBLIC WEBSITE VIEW
+  // ==========================================
   return (
     <div className="min-h-screen bg-[#fdf8f5] font-sans text-gray-800 flex flex-col overflow-x-hidden relative">
       {/* Custom Animations */}
@@ -216,7 +371,7 @@ export default function App() {
               Logout
             </button>
           ) : (
-            <button onClick={() => setShowLoginModal(true)} className="text-xs font-bold text-[#3a302a] bg-[#ffd1bc] hover:bg-white transition-colors px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
+            <button onClick={() => openLoginModal('client')} className="text-xs font-bold text-[#3a302a] bg-[#ffd1bc] hover:bg-white transition-colors px-3 py-1.5 rounded-full flex items-center gap-1 shadow-sm">
               <UserIcon className="w-3 h-3" /> Client Login
             </button>
           )}
@@ -228,7 +383,9 @@ export default function App() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-[2rem] p-8 max-w-md w-full shadow-2xl animate-[slideInRight_0.3s_ease-out]">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-3xl font-black text-[#3a302a] font-serif">Welcome Back! <PawIcon className="w-6 h-6 text-[#d65a47] inline-block -mt-2" /></h3>
+              <h3 className="text-3xl font-black text-[#3a302a] font-serif">
+                {loginType === 'admin' ? 'Staff Login' : 'Welcome Back!'} <PawIcon className="w-6 h-6 text-[#d65a47] inline-block -mt-2" />
+              </h3>
               <button onClick={() => setShowLoginModal(false)} className="text-gray-400 hover:text-gray-700">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
@@ -243,7 +400,7 @@ export default function App() {
                 <input type="password" required value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" placeholder="••••••••" />
               </div>
               <button type="submit" className="w-full bg-[#104b57] text-white font-black py-4 rounded-xl mt-4 hover:bg-[#0c3942] transition-colors shadow-md">
-                Login to Portal
+                {loginType === 'admin' ? 'Enter Admin Portal' : 'Login to Portal'}
               </button>
             </form>
           </div>
@@ -308,7 +465,35 @@ export default function App() {
             </svg>
         </div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 text-center relative z-20 pt-10">
+        {/* Day / Night Background Decorations */}
+        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block">
+          <SunIcon className="w-32 h-32 text-white/40" />
+        </div>
+        <div className="absolute top-40 left-1/4 text-white/60 animate-float delay-1000 z-10 hidden md:block">
+          <CloudIcon className="w-20 h-20" />
+        </div>
+        
+        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10">
+          <MoonIcon className="w-24 h-24 text-white/50" />
+        </div>
+        <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10">
+          <StarIcon className="w-10 h-10" />
+        </div>
+        <div className="absolute top-1/2 right-10 text-white/40 animate-float delay-700 z-10">
+          <StarIcon className="w-6 h-6" />
+        </div>
+
+        {/* RESTORED: We Do It Out Of Love Section */}
+        <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12">
+          <div className="inline-block bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-[2rem] border border-white/50 shadow-lg mx-4">
+            <p className="text-xl md:text-2xl text-[#3a302a] leading-relaxed font-medium">
+              At Paws & Tails, we don't feel the need to charge a premium for something we absolutely love doing. <br className="hidden md:block" />
+              <strong className="text-[#104b57] font-black block mt-2 text-2xl md:text-3xl font-serif">We do it more out of love than anything else!</strong>
+            </p>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 text-center relative z-20">
           <div className="bg-white/95 backdrop-blur-sm rounded-[3rem] p-10 shadow-xl border-4 border-white transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl flex flex-col items-center">
             <div className="p-4 bg-[#d65a47]/10 rounded-full mb-6"><SunIcon className="w-12 h-12 text-[#d65a47]" /></div>
             <h3 className="text-3xl font-black text-[#3a302a] mb-3 font-serif">Day Care</h3>
@@ -425,9 +610,9 @@ export default function App() {
                         </div>
                       </div>
                       
-                      <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Owner's Name</label><input type="text" required className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] bg-white text-gray-800 shadow-sm" /></div>
-                      <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Email Address</label><input type="email" required className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] bg-white text-gray-800 shadow-sm" /></div>
-                      <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Phone Number</label><input type="tel" required className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] bg-white text-gray-800 shadow-sm" /></div>
+                      <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Owner's Name</label><input type="text" required value={formData.ownerName} onChange={(e) => setFormData({...formData, ownerName: e.target.value})} className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] bg-white text-gray-800 shadow-sm" /></div>
+                      <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Email Address</label><input type="email" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] bg-white text-gray-800 shadow-sm" /></div>
+                      <div><label className="block text-sm font-bold text-gray-700 mb-1.5">Phone Number</label><input type="tel" required value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border-2 border-white rounded-xl px-4 py-3 focus:outline-none focus:border-[#d65a47] bg-white text-gray-800 shadow-sm" /></div>
                     </div>
                   )}
 
@@ -437,9 +622,9 @@ export default function App() {
                         <PawIcon className="w-6 h-6 text-[#d65a47]" /> 2. Pet Details
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="md:col-span-2"><label className="block text-sm font-bold text-gray-700 mb-1">Pet's Name</label><input type="text" required className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" /></div>
-                        <div><label className="block text-sm font-bold text-gray-700 mb-1">Breed</label><input type="text" required className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" /></div>
-                        <div><label className="block text-sm font-bold text-gray-700 mb-1">Age</label><input type="text" required className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" /></div>
+                        <div className="md:col-span-2"><label className="block text-sm font-bold text-gray-700 mb-1">Pet's Name</label><input type="text" required value={formData.petName} onChange={(e) => setFormData({...formData, petName: e.target.value})} className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" /></div>
+                        <div><label className="block text-sm font-bold text-gray-700 mb-1">Breed</label><input type="text" required value={formData.breed} onChange={(e) => setFormData({...formData, breed: e.target.value})} className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" /></div>
+                        <div><label className="block text-sm font-bold text-gray-700 mb-1">Age</label><input type="text" required value={formData.age} onChange={(e) => setFormData({...formData, age: e.target.value})} className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50" /></div>
                       </div>
                     </div>
                   )}
@@ -477,7 +662,7 @@ export default function App() {
                         </div>
                         <div className="md:col-span-2">
                           <label className="block text-sm font-bold text-gray-700 mb-1">Additional Information</label>
-                          <textarea rows="3" className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50 text-gray-700 resize-none" placeholder="Tell us anything else we should know..."></textarea>
+                          <textarea rows="3" value={formData.info} onChange={(e) => setFormData({...formData, info: e.target.value})} className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-[#104b57] bg-gray-50 text-gray-700 resize-none" placeholder="Tell us anything else we should know..."></textarea>
                         </div>
                       </div>
                     </div>
@@ -541,6 +726,24 @@ export default function App() {
           <button onClick={openForm} className="bg-[#104b57] text-white hover:bg-[#0c3942] font-black text-lg px-10 py-4 rounded-full shadow-lg transition-all transform hover:-translate-y-1 w-full mt-auto">
             {isLoggedIn ? "Request VIP Pass Update" : "Schedule Interview to Unlock"}
           </button>
+        </div>
+      </section>
+
+      {/* Instagram Gallery Section */}
+      <section className="bg-[#ffd1bc] py-20 px-4 relative border-y-8 border-white shadow-sm z-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col items-center text-center mb-10">
+            <h2 className="text-4xl md:text-5xl font-black text-[#3a302a] font-serif mb-2 drop-shadow-sm">Follow Our Adventures</h2>
+            <a href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="text-[#104b57] font-black text-xl hover:underline mb-2">@pawsandtails_nj</a>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-1 md:gap-3">
+            {galleryImages.map((imgUrl, idx) => (
+              <a key={idx} href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="aspect-square bg-gray-100 overflow-hidden shadow-sm hover:shadow-xl transform transition-all duration-300 group relative">
+                <img src={imgUrl} alt="Instagram Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -615,30 +818,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* Instagram Gallery Section */}
-      <section className="bg-[#ffd1bc] py-20 px-4 relative border-y-8 border-white shadow-sm z-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col items-center text-center mb-10">
-            <h2 className="text-4xl md:text-5xl font-black text-[#3a302a] font-serif mb-2 drop-shadow-sm">Follow Our Adventures</h2>
-            <a href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="text-[#104b57] font-black text-xl hover:underline mb-2">@pawsandtails_nj</a>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-1 md:gap-3">
-            {galleryImages.map((imgUrl, idx) => (
-              <a key={idx} href="https://www.instagram.com/pawsandtails_nj/" target="_blank" rel="noopener noreferrer" className="aspect-square bg-gray-100 overflow-hidden shadow-sm hover:shadow-xl transform transition-all duration-300 group relative">
-                <img src={imgUrl} alt="Instagram Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-[#ffd1bc] py-12 flex flex-col items-center text-center px-4 relative border-t border-black/10">
          <div className="w-20 h-20 rounded-full border-2 border-white shadow-md mb-6 overflow-hidden bg-[#3a302a] hover:rotate-12 transition-transform duration-300 cursor-pointer flex items-center justify-center">
            <img src={logoUrl} alt="Paws & Tails" className="w-full h-full object-cover object-center transform scale-[1.2]" />
          </div>
          <div className="font-black text-2xl text-[#3a302a] mb-2">(201) 822-5535</div>
+         
+         <div className="mt-8 pt-6 border-t border-black/10 w-full max-w-md flex justify-center">
+           <button onClick={() => openLoginModal('admin')} className="text-sm font-bold text-[#104b57] hover:text-[#d65a47] transition-colors flex items-center gap-2">
+             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+             Staff Login
+           </button>
+         </div>
       </footer>
 
       {/* AI Receptionist Floating Widget (RESTORED) */}
@@ -704,3 +896,4 @@ function CloudIcon({ className }) { return (<svg className={className} fill="cur
 function StarIcon({ className }) { return (<svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>); }
 function CheckCircleIcon({ className }) { return (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4"></path></svg>); }
 function UserIcon({ className }) { return (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>); }
+function CalendarIcon({ className }) { return (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>); }
