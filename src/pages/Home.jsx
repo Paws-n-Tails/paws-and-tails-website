@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { HeartIcon, PawIcon, SunIcon, MoonIcon, CloudIcon, StarIcon, CheckCircleIcon } from '../components/Icons';
+// ONLY importing the icons we know 100% exist in your file to prevent crashes!
+import { HeartIcon, PawIcon } from '../components/Icons';
+
+// --- INLINE ICONS (To prevent "Export Not Found" crashes) ---
+const SunIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>);
+const MoonIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>);
+const CloudIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>);
+const StarIcon = ({ className }) => (<svg className={className} fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>);
+const CheckCircleIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>);
 
 // --- SVGs for Google Reviews ---
-const GoogleStarIcon = () => (
-  <svg className="w-5 h-5 text-[#fbbc04] fill-current" viewBox="0 0 24 24">
-    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-  </svg>
-);
-
+const GoogleStarIcon = () => (<svg className="w-5 h-5 text-[#fbbc04] fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>);
 const GoogleG = () => (
   <svg className="w-6 h-6" viewBox="0 0 24 24">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -57,7 +60,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
           entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.15 });
     
     const elements = document.querySelectorAll('.animate-on-scroll');
     elements.forEach(el => observer.observe(el));
@@ -190,7 +193,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         .animate-heartbeat { animation: heartbeat 2s ease-in-out infinite; }
         @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-60px); } 100% { opacity: 1; transform: translateX(0); } }
         @keyframes slideInRight { 0% { opacity: 0; transform: translateX(60px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-on-scroll { opacity: 0; transition: opacity 0.3s ease-out; }
+        .animate-on-scroll { opacity: 0; transition: opacity 0.4s ease-out; }
         .slide-left.visible { animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .slide-right.visible { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       `}} />
@@ -214,7 +217,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
           <div className="absolute inset-0 bg-[#ffd1bc]/10 mix-blend-multiply"></div>
         </div>
 
-        {/* Floating Icons */}
+        {/* --- MANY MORE HEARTS & PAWS IN HERO SECTION --- */}
         <div className="absolute top-20 left-10 text-[#ffd1bc] opacity-80 animate-float" style={{ animationDelay: '0s' }}><HeartIcon className="w-12 h-12" /></div>
         <div className="absolute top-32 right-32 text-[#d65a47] opacity-40 animate-float" style={{ animationDelay: '0.5s' }}><PawIcon className="w-14 h-14" /></div>
         <div className="absolute top-52 right-10 text-[#ffd1bc] opacity-70 animate-float" style={{ animationDelay: '1s' }}><HeartIcon className="w-16 h-16" /></div>
@@ -230,6 +233,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         <div className="absolute top-40 right-5 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '2s' }}><PawIcon className="w-9 h-9" /></div>
         <div className="absolute bottom-5 left-1/2 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '3.2s' }}><HeartIcon className="w-10 h-10" /></div>
         <div className="absolute top-30 left-1/6 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '1.5s' }}><PawIcon className="w-7 h-7" /></div>
+        {/* --- END HERO SECTION ICONS --- */}
         
         <div className="relative z-10 flex flex-col items-center w-full max-w-3xl text-center mt-6">
           <div className="flex flex-col items-center mb-6">
@@ -257,7 +261,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         </div>
       </section>
 
-      {/* Love Statement Section */}
+      {/* ---------------- NEW LOVE STATEMENT SECTION (DARK BRAND BG) ---------------- */}
       <section className="bg-[#3a302a] py-24 px-4 relative z-20 overflow-hidden shadow-2xl border-y-8 border-[#ffd1bc]">
         <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll slide-right">
           
@@ -275,6 +279,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
             We do it more out of love than anything else!
           </p>
           
+          {/* Subtle floating icons within this dark love section */}
           <div className="absolute top-10 left-10 text-[#ffd1bc] opacity-20 animate-float" style={{ animationDelay: '0.2s' }}><HeartIcon className="w-8 h-8" /></div>
           <div className="absolute bottom-10 right-20 text-[#d65a47] opacity-30 animate-float" style={{ animationDelay: '0.7s' }}><PawIcon className="w-10 h-10 transform rotate-12" /></div>
           <div className="absolute top-1/2 left-1/4 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '1.2s' }}><HeartIcon className="w-6 h-6" /></div>
@@ -296,9 +301,9 @@ export default function Home({ setIsAdminView, logoUrl }) {
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
             </svg>
         </div>
-        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block"><SunIcon className="w-32 h-32 text-white/40" /></div>
+        <div className="absolute top-10 left-10 text-white/50 animate-float z-10 hidden md:block"><SunIcon className="w-32 h-32" /></div>
         <div className="absolute top-40 left-1/4 text-white/60 animate-float delay-1000 z-10 hidden md:block"><CloudIcon className="w-20 h-20" /></div>
-        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24 text-white/50" /></div>
+        <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24" /></div>
         <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10"><StarIcon className="w-10 h-10" /></div>
 
         <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12 animate-on-scroll slide-left">
@@ -352,7 +357,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
               {submitSuccess ? (
                 <div className="text-center relative z-10">
                   <div className="w-24 h-24 bg-[#104b57]/10 text-[#104b57] rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                    <CheckCircleIcon className="w-12 h-12" />
                   </div>
                   <h2 className="text-4xl font-black text-[#3a302a] font-serif mb-4">Request Sent!</h2>
                   <div className="bg-[#ffd1bc] text-[#3a302a] inline-block px-6 py-2 rounded-full font-bold text-sm mb-6">Pending Approval</div>
@@ -525,7 +530,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
         </div>
       </section>
 
-      {/* ---------------- GOOGLE REVIEWS SECTION ---------------- */}
+      {/* ---------------- NEW GOOGLE REVIEWS SECTION ---------------- */}
       <section id="reviews" className="w-full bg-white border-y-8 border-[#ffd1bc] py-24 px-4 shadow-inner relative z-20 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           
