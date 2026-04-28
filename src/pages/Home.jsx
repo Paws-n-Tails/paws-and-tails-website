@@ -87,7 +87,7 @@ export default function Home({ setIsAdminView, logoUrl }) {
 
   const reviews = [
     { name: "Amanda Torres", text: "Paws & Tails is amazing! My Goldendoodle Bailey loves it here. It is so hard to find a truly cage-free environment, and I have total peace of mind knowing she is sleeping on a real bed and not locked up.", rating: 5, initial: "A", color: "bg-purple-500", time: "2 weeks ago" },
-    { name: "Laurie Henderson", text: "Marshy is a timid Maltipoo, but he comes home so happy and exhausted. Highly recommend!", rating: 5, initial: "P", color: "bg-blue-500", time: "1 month ago" },
+    { name: "Parwin Abassi", text: "Brownie is a timid Maltipoo, but he comes home so happy and exhausted. The fact that they cap the weight limit at 50 lbs makes me feel so much better leaving him. Highly recommend!", rating: 5, initial: "P", color: "bg-blue-500", time: "1 month ago" },
     { name: "Michael Rossi", text: "Best day care in Ridgefield Park hands down. The facility is spotless, the scheduling is super easy, and Charlie literally pulls me to the front door when we drop him off. 5 stars.", rating: 5, initial: "M", color: "bg-green-500", time: "2 months ago" },
     { name: "Allison M", text: "Mac loves going to Paws & Tails! He's always so excited when we pull up, and he comes back wonderfully exhausted from running around all day.", rating: 5, initial: "A", color: "bg-[#104b57]", time: "3 months ago" },
     { name: "Lauren C", text: "Paws & Tails is amazing and I am so thankful I found someone I trust completely with my pup. 10/10 highly recommend to anyone in NJ looking for cage-free boarding.", rating: 5, initial: "L", color: "bg-[#d65a47]", time: "4 months ago" },
@@ -212,25 +212,10 @@ export default function Home({ setIsAdminView, logoUrl }) {
           <div className="absolute inset-0 bg-[#ffd1bc]/10 mix-blend-multiply"></div>
         </div>
 
-        {/* --- MANY MORE HEARTS & PAWS IN HERO SECTION --- */}
         <div className="absolute top-20 left-10 text-[#ffd1bc] opacity-80 animate-float" style={{ animationDelay: '0s' }}><HeartIcon className="w-12 h-12" /></div>
         <div className="absolute top-32 right-32 text-[#d65a47] opacity-40 animate-float" style={{ animationDelay: '0.5s' }}><PawIcon className="w-14 h-14" /></div>
         <div className="absolute top-52 right-10 text-[#ffd1bc] opacity-70 animate-float" style={{ animationDelay: '1s' }}><HeartIcon className="w-16 h-16" /></div>
         <div className="absolute top-10 left-1/3 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '0.8s' }}><PawIcon className="w-8 h-8 transform -rotate-12" /></div>
-        
-        {/* New Hero Icons */}
-        <div className="absolute bottom-30 left-10 text-[#d65a47] opacity-15 animate-float" style={{ animationDelay: '1.5s' }}><PawIcon className="w-10 h-10 transform rotate-45" /></div>
-        <div className="absolute bottom-20 right-30 text-[#ffd1bc] opacity-40 animate-float" style={{ animationDelay: '2s' }}><HeartIcon className="w-18 h-18" /></div>
-        <div className="absolute top-70 left-1/4 text-[#d65a47] opacity-25 animate-float" style={{ animationDelay: '2.5s' }}><PawIcon className="w-9 h-9" /></div>
-        <div className="absolute top-60 left-1/2 text-[#ffd1bc] opacity-35 animate-float" style={{ animationDelay: '3s' }}><HeartIcon className="w-14 h-14" /></div>
-        <div className="absolute top-15 right-1/4 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '3.5s' }}><PawIcon className="w-7 h-7 transform rotate-30" /></div>
-        <div className="absolute bottom-10 right-1/2 text-[#ffd1bc] opacity-30 animate-float" style={{ animationDelay: '4s' }}><HeartIcon className="w-15 h-15" /></div>
-        <div className="absolute top-5 bottom-0 right-10 text-[#d65a47] opacity-15 animate-float" style={{ animationDelay: '0.2s' }}><PawIcon className="w-11 h-11 transform rotate-12" /></div>
-        <div className="absolute bottom-40 left-1/5 text-[#ffd1bc] opacity-20 animate-float" style={{ animationDelay: '1s' }}><HeartIcon className="w-13 h-13" /></div>
-        <div className="absolute top-40 right-5 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '2s' }}><PawIcon className="w-9 h-9" /></div>
-        <div className="absolute bottom-5 left-1/2 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '3.2s' }}><HeartIcon className="w-10 h-10" /></div>
-        <div className="absolute top-30 left-1/6 text-[#d65a47] opacity-10 animate-float" style={{ animationDelay: '1.5s' }}><PawIcon className="w-7 h-7" /></div>
-        {/* --- END HERO SECTION ICONS --- */}
         
         <div className="relative z-10 flex flex-col items-center w-full max-w-3xl text-center mt-6">
           <div className="flex flex-col items-center mb-6">
@@ -258,40 +243,6 @@ export default function Home({ setIsAdminView, logoUrl }) {
         </div>
       </section>
 
-      {/* ---------------- NEW LOVE STATEMENT SECTION (DARK BRAND BG) ---------------- */}
-      <section className="bg-[#3a302a] py-24 px-4 relative z-20 overflow-hidden shadow-2xl border-y-8 border-[#ffd1bc]">
-        <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll slide-right">
-          
-          <div className="flex justify-center items-center gap-4 mb-8">
-            <HeartIcon className="w-12 h-12 text-[#ffd1bc] animate-heartbeat drop-shadow-md" style={{ animationDelay: '0s' }} />
-            <HeartIcon className="w-16 h-16 text-[#d65a47] animate-heartbeat drop-shadow-md" style={{ animationDelay: '0.2s' }} />
-            <HeartIcon className="w-12 h-12 text-[#ffd1bc] animate-heartbeat drop-shadow-md" style={{ animationDelay: '0.4s' }} />
-          </div>
-
-          <h2 className="text-3xl md:text-5xl font-black text-white font-serif leading-tight mb-8">
-            At Paws & Tails, we don't feel the need to charge a premium for something we absolutely <span className="text-[#d65a47]">love</span> doing.
-          </h2>
-          
-          <p className="text-2xl md:text-4xl text-[#ffd1bc] font-black font-serif italic">
-            We do it more out of love than anything else!
-          </p>
-          
-          {/* Subtle floating icons within this dark love section */}
-          <div className="absolute top-10 left-10 text-[#ffd1bc] opacity-20 animate-float" style={{ animationDelay: '0.2s' }}><HeartIcon className="w-8 h-8" /></div>
-          <div className="absolute bottom-10 right-20 text-[#d65a47] opacity-30 animate-float" style={{ animationDelay: '0.7s' }}><PawIcon className="w-10 h-10 transform rotate-12" /></div>
-          <div className="absolute top-1/2 left-1/4 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '1.2s' }}><HeartIcon className="w-6 h-6" /></div>
-          <div className="absolute top-1/3 right-10 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '1.7s' }}><PawIcon className="w-5 h-5 transform -rotate-15" /></div>
-          <div className="absolute bottom-20 left-1/2 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '2.2s' }}><HeartIcon className="w-7 h-7" /></div>
-          <div className="absolute bottom-5 bottom-0 left-5 text-[#ffd1bc] opacity-10 animate-float" style={{ animationDelay: '0.1s' }}><HeartIcon className="w-9 h-9 transform -rotate-12" /></div>
-          <div className="absolute top-20 right-1/4 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '0.9s' }}><PawIcon className="w-8 h-8 transform rotate-30" /></div>
-          <div className="absolute top-1/2 right-1/3 text-[#ffd1bc] opacity-15 animate-float" style={{ animationDelay: '1.4s' }}><HeartIcon className="w-6 h-6" /></div>
-          <div className="absolute bottom-15 right-10 text-[#ffd1bc] opacity-10 animate-float" style={{ animationDelay: '0.5s' }}><HeartIcon className="w-9 h-9" /></div>
-          <div className="absolute top-5 left-1/3 text-[#d65a47] opacity-20 animate-float" style={{ animationDelay: '2.1s' }}><PawIcon className="w-7 h-7 transform rotate-45" /></div>
-          
-        </div>
-      </section>
-      {/* ---------------- END NEW LOVE STATEMENT SECTION ---------------- */}
-
       {/* Services Section */}
       <section className="bg-gradient-to-b md:bg-gradient-to-r from-[#ffd1bc] via-[#a3b1c6] to-[#104b57] py-24 px-4 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -mt-1 flex text-white z-20">
@@ -304,10 +255,11 @@ export default function Home({ setIsAdminView, logoUrl }) {
         <div className="absolute bottom-20 right-10 md:top-20 md:right-20 text-white/30 animate-pulse z-10"><MoonIcon className="w-24 h-24 text-white/50" /></div>
         <div className="absolute bottom-40 right-1/4 text-white/60 animate-float delay-500 z-10"><StarIcon className="w-10 h-10" /></div>
 
-        <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12 animate-on-scroll slide-left">
+        <div className="max-w-4xl mx-auto text-center relative z-20 pt-6 pb-12">
           <div className="inline-block bg-white/40 backdrop-blur-md p-6 md:p-8 rounded-[2rem] border border-white/50 shadow-lg mx-4">
             <p className="text-xl md:text-2xl text-[#3a302a] leading-relaxed font-medium">
-              We make each pet feel uniquely comfortable and loved. Check out our transparent pricing below!
+              At Paws & Tails, we don't feel the need to charge a premium for something we absolutely love doing. <br className="hidden md:block" />
+              <strong className="text-[#104b57] font-black block mt-2 text-2xl md:text-3xl font-serif">We do it more out of love than anything else!</strong>
             </p>
           </div>
         </div>
