@@ -5,6 +5,10 @@ import { PawIcon, UserIcon, CalendarIcon } from '../components/Icons';
 import ClientDatabase from './ClientDatabase';
 import CalendarView from './CalendarView';
 import FinancialDashboard from './FinancialDashboard';
+import MediaGallery from './MediaGallery';
+
+// Extra icon for Sidebar
+const CameraIcon = ({ className }) => (<svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>);
 
 export default function Admin({ setIsAdminView, logoUrl }) {
   const [leads, setLeads] = useState([]);
@@ -212,6 +216,11 @@ export default function Admin({ setIsAdminView, logoUrl }) {
                 <CalendarIcon className="w-5 h-5" /> Calendar
               </button>
             </li>
+            <li>
+              <button onClick={() => setActiveTab('media')} className={`w-full flex items-center gap-3 px-6 py-3 transition-colors ${activeTab === 'media' ? 'bg-white/10 text-[#ffd1bc] font-bold border-r-4 border-[#d65a47]' : 'text-white/70 hover:text-white hover:bg-white/5 font-medium'}`}>
+                <CameraIcon className="w-5 h-5" /> Media Gallery
+              </button>
+            </li>
           </ul>
         </nav>
 
@@ -220,7 +229,7 @@ export default function Admin({ setIsAdminView, logoUrl }) {
         
         <div className="border-t border-white/10">
             <button onClick={() => setActiveTab('financials')} className={`w-full flex items-center gap-3 px-6 py-4 transition-colors ${activeTab === 'financials' ? 'bg-white/10 text-[#ffd1bc] font-bold border-r-4 border-[#d65a47]' : 'text-white/70 hover:text-white hover:bg-white/5 font-medium'}`}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Financials
             </button>
         </div>
@@ -239,6 +248,7 @@ export default function Admin({ setIsAdminView, logoUrl }) {
         {activeTab === 'clientDatabase' && <ClientDatabase leads={leads} appointments={appointments} fetchDashboardData={fetchDashboardData} />}
         {activeTab === 'calendar' && <CalendarView leads={leads} appointments={appointments} fetchDashboardData={fetchDashboardData} />}
         {activeTab === 'financials' && <FinancialDashboard leads={leads} appointments={appointments} />}
+        {activeTab === 'media' && <MediaGallery leads={leads} />}
 
         {activeTab === 'meetAndGreets' && (
           <div className="flex flex-col h-full">
